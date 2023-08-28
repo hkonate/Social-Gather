@@ -11,7 +11,7 @@ datasource db {
 }
 
 model User {
-  id                        String @id @db.Uuid @default(dbgenerated("gen_random_uuid"))
+  id                        String @id @default(dbgenerated("gen_random_uuid()"))  @db.Uuid
   firstname                 String
   lastname                  String
   pseudo                    String @unique
@@ -28,18 +28,18 @@ model User {
 }
 
 model Profile{
-  id                        String @id @db.Uuid @default(dbgenerated("gen_random_uuid"))
+  id                        String @id  @default(dbgenerated("gen_random_uuid()"))  @db.Uuid
   bio                       String
-  userId                    String @unique
+  userId                    String @unique @db.Uuid
   user                      User @relation(fields: [userId], references: [id])
 }
 
 model Event{
-  id                        String @id @db.Uuid @default(dbgenerated("gen_random_uuid"))
+  id                        String @id  @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   title                     String @db.Char(50)
   description               String
   date                      DateTime
-  creatorId                 String @unique
+  creatorId                 String @unique @db.Uuid
   creator                   User @relation("event_created",fields: [creatorId], references: [id])
   ListOfAttendees           User[] 
   room                      Message[]
@@ -48,11 +48,11 @@ model Event{
 }
 
 model Message{
-  id                        String @id @db.Uuid @default(dbgenerated("gen_random_uuid"))
+  id                        String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   conversation              String
-  authorId                  String 
+  authorId                  String @db.Uuid
   author                    User @relation(fields: [authorId], references: [id])
-  eventId                   String 
+  eventId                   String @db.Uuid
   event                     Event @relation(fields: [eventId], references: [id])
   createdAt                 DateTime @default(now())
   updatedAt                 DateTime @updatedAt
