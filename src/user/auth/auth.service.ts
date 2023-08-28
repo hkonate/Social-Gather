@@ -55,5 +55,19 @@ export class AuthService {
         picture,
       },
     });
+    return this.generateJWT(user.pseudo, user.id);
+  }
+
+  private generateJWT(name: string, id: string) {
+    return jwt.sign(
+      {
+        name,
+        id,
+      },
+      process.env.JSON_TOKEN_KEY,
+      {
+        expiresIn: 3600000,
+      },
+    );
   }
 }
