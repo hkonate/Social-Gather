@@ -1,8 +1,8 @@
-import { Injectable, Post, ConflictException } from '@nestjs/common';
+import { Injectable, ConflictException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import * as bcrypt from 'bcryptjs';
 import * as jwt from 'jsonwebtoken';
-export interface SignupParams {
+interface SignupParams {
   firstname: string;
   lastname: string;
   pseudo: string;
@@ -11,11 +11,16 @@ export interface SignupParams {
   password: string;
   picture?: string;
 }
+
+interface SigninParams {
+  email: string;
+  password: string;
+}
+
 @Injectable()
 export class AuthService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  @Post()
   async signup({
     firstname,
     lastname,
@@ -56,6 +61,10 @@ export class AuthService {
       },
     });
     return this.generateJWT(user.pseudo, user.id);
+  }
+
+  async signin({ email, password }: SigninParams) {
+    console.log({ email, password });
   }
 
   private generateJWT(name: string, id: string) {

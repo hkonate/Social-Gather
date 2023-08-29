@@ -26,6 +26,7 @@ export class SignupDTO {
   phone?: string;
 
   @IsString()
+  @IsNotEmpty()
   email: string;
 
   @IsString()
@@ -42,4 +43,20 @@ export class SignupDTO {
   @IsString()
   @IsNotEmpty()
   picture?: string;
+}
+
+export class SigninDTO {
+  @IsString()
+  @IsNotEmpty()
+  email: string;
+
+  @IsString()
+  @MinLength(8)
+  @Matches(
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
+    {
+      message: 'password must be a valid',
+    },
+  )
+  password: string;
 }
