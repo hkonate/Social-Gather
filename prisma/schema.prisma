@@ -59,7 +59,7 @@ model Message{
   updatedAt                 DateTime @updatedAt
 }
 
-enum InclusionType{
+enum InclusionType {
   HALAL
   VEGAN
   VEGE
