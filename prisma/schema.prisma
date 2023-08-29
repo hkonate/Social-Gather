@@ -38,7 +38,8 @@ model Event{
   id                        String @id  @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   title                     String @db.Char(50)
   description               String
-  date                      DateTime
+  schedule                  String
+  inclusive                 InclusionType[]
   creatorId                 String @unique @db.Uuid
   creator                   User @relation("event_created",fields: [creatorId], references: [id])
   ListOfAttendees           User[] 
@@ -56,4 +57,12 @@ model Message{
   event                     Event @relation(fields: [eventId], references: [id])
   createdAt                 DateTime @default(now())
   updatedAt                 DateTime @updatedAt
+}
+
+enum InclusionType{
+  HALAL
+  VEGAN
+  VEGE
+  CASHER
+  STANDARD                 
 }
