@@ -23,7 +23,7 @@ export class EventService {
         description,
         schedule,
         inclusive,
-        creatorId: 'fc2f8777-27a1-4248-9ce5-4f963d81d203',
+        creatorId: '108fa9c9-b83f-4de8-8daf-f720a7ee9a97',
       },
     });
   }
