@@ -22,38 +22,34 @@ const creatorSelect = {
   email: true,
   picture: true,
 };
+
+const select = {
+  ...eventSelect,
+  creator: {
+    select: {
+      ...creatorSelect,
+    },
+  },
+};
 @Injectable()
 export class EventService {
   constructor(private readonly prismaService: PrismaService) {}
   //Get all events
   getEvents() {
     return this.prismaService.event.findMany({
-      select: {
-        ...eventSelect,
-        creator: {
-          select: {
-            ...creatorSelect,
-          },
-        },
-      },
+      select,
     });
   }
   //Get one event
   async getEventById(id: string) {
     const event = await this.prismaService.event.findUnique({
       where: { id },
-      select: {
-        ...eventSelect,
-        creator: {
-          select: {
-            ...creatorSelect,
-          },
-        },
-      },
+      select,
     });
     if (!event) {
       throw new NotFoundException();
     }
+    return event;
   }
   //Create an event
   createEvent({ title, description, schedule, inclusive }: CreateEventParams) {
@@ -73,5 +69,12 @@ export class EventService {
   //Update an event
 
   //Delete an event
-  deleteEventById(id: string) {}
+  deleteEventById(id: string) {
+    return this.prismaService.event.delete({
+      where: {
+        id,
+      },
+      select,
+    });
+  }
 }
