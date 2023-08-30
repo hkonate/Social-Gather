@@ -12,7 +12,9 @@ interface CreateEventParams {
 export class EventService {
   constructor(private readonly prismaService: PrismaService) {}
   //Get all events
-
+  getAllEvents() {
+    return this.prismaService.event.findMany();
+  }
   //Get one event
 
   //Create an event
