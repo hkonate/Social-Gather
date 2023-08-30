@@ -16,7 +16,7 @@ export class EventService {
     return this.prismaService.event.findMany();
   }
   //Get one event
-
+  getEventById(id: string) {}
   //Create an event
   createEvent({ title, description, schedule, inclusive }: CreateEventParams) {
     return this.prismaService.event.create({

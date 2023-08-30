@@ -1,4 +1,13 @@
-import { Controller, Post, Get, Delete, Put, Body } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Get,
+  Delete,
+  Put,
+  Body,
+  ParseUUIDPipe,
+  Param,
+} from '@nestjs/common';
 import { CreateEventDTO } from './dtos/event.dtos';
 import { EventService } from './event.service';
 
@@ -8,6 +17,11 @@ export class EventController {
   @Get()
   getEvents() {
     return this.eventService.getEvents();
+  }
+
+  @Get('/:id')
+  getEventById(@Param('id', ParseUUIDPipe) id: string) {
+    return this.eventService.getEventById(id);
   }
 
   @Post()
