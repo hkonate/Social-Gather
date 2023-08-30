@@ -8,15 +8,50 @@ interface CreateEventParams {
   schedule: string;
   inclusive: InclusionType[];
 }
+
+const eventSelect = {
+  title: true,
+  description: true,
+  schedule: true,
+  inclusive: true,
+};
+
+const creatorSelect = {
+  pseudo: true,
+  phone: true,
+  email: true,
+  picture: true,
+};
 @Injectable()
 export class EventService {
   constructor(private readonly prismaService: PrismaService) {}
   //Get all events
   getEvents() {
-    return this.prismaService.event.findMany();
+    return this.prismaService.event.findMany({
+      select: {
+        ...eventSelect,
+        creator: {
+          select: {
+            ...creatorSelect,
+          },
+        },
+      },
+    });
   }
   //Get one event
-  getEventById(id: string) {}
+  getEventById(id: string) {
+    return this.prismaService.event.findUnique({
+      where: { id },
+      select: {
+        ...eventSelect,
+        creator: {
+          select: {
+            ...creatorSelect,
+          },
+        },
+      },
+    });
+  }
   //Create an event
   createEvent({ title, description, schedule, inclusive }: CreateEventParams) {
     return this.prismaService.event.create({
