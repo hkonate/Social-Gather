@@ -40,7 +40,7 @@ model Event{
   description               String
   schedule                  String
   inclusive                 InclusionType[]
-  creatorId                 String @unique @db.Uuid
+  creatorId                 String @db.Uuid
   creator                   User @relation("event_created",fields: [creatorId], references: [id])
   ListOfAttendees           User[] 
   room                      Message[]

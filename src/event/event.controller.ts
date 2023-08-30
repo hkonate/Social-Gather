@@ -5,6 +5,10 @@ import { EventService } from './event.service';
 @Controller('event')
 export class EventController {
   constructor(private readonly eventService: EventService) {}
+  @Get()
+  getEvents() {
+    return this.eventService.getEvents();
+  }
 
   @Post()
   createEvent(@Body() body: CreateEventDTO) {
