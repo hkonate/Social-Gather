@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InclusionType } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 
@@ -39,8 +39,8 @@ export class EventService {
     });
   }
   //Get one event
-  getEventById(id: string) {
-    return this.prismaService.event.findUnique({
+  async getEventById(id: string) {
+    const event = await this.prismaService.event.findUnique({
       where: { id },
       select: {
         ...eventSelect,
@@ -51,6 +51,9 @@ export class EventService {
         },
       },
     });
+    if (!event) {
+      throw new NotFoundException();
+    }
   }
   //Create an event
   createEvent({ title, description, schedule, inclusive }: CreateEventParams) {
@@ -64,9 +67,11 @@ export class EventService {
       },
     });
   }
+
   //Join/Unjoin an event
 
   //Update an event
 
   //Delete an event
+  deleteEventById(id: string) {}
 }

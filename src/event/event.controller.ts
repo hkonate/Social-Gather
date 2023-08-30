@@ -28,4 +28,9 @@ export class EventController {
   createEvent(@Body() body: CreateEventDTO) {
     return this.eventService.createEvent(body);
   }
+
+  @Delete('/:id')
+  deleteEventById(@Param('id', ParseUUIDPipe) id: string) {
+    return this.eventService.deleteEventById(id);
+  }
 }
