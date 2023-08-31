@@ -7,6 +7,8 @@ import {
   Body,
   ParseUUIDPipe,
   Param,
+  ParseBoolPipe,
+  Query,
 } from '@nestjs/common';
 import { CreateEventDTO } from './dtos/event.dtos';
 import { EventService } from './event.service';
@@ -27,6 +29,14 @@ export class EventController {
   @Post()
   createEvent(@Body() body: CreateEventDTO) {
     return this.eventService.createEvent(body);
+  }
+
+  @Put('/:id/:attend')
+  attendEvent(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Param('attend', ParseBoolPipe) attend: boolean,
+  ) {
+    return this.eventService.attendEvent(id, attend);
   }
 
   @Delete('/:id')

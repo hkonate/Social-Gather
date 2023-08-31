@@ -39,6 +39,7 @@ model Event{
   title                     String @db.Char(50)
   description               String
   schedule                  String
+  menu                      String
   inclusive                 InclusionType[]
   creatorId                 String @db.Uuid
   creator                   User @relation("event_created",fields: [creatorId], references: [id])

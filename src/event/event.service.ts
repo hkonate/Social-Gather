@@ -66,7 +66,7 @@ export class EventService {
   }
 
   //Join/Unjoin an event
-
+  attendEvent(id: string, attend: boolean) {}
   //Update an event
 
   //Delete an event
