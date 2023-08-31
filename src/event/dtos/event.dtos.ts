@@ -1,4 +1,5 @@
 import { $Enums, InclusionType } from '@prisma/client';
+import { Exclude } from 'class-transformer';
 import {
   IsArray,
   IsEnum,

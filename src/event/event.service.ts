@@ -61,6 +61,7 @@ export class EventService {
         inclusive,
         creatorId: '108fa9c9-b83f-4de8-8daf-f720a7ee9a97',
       },
+      select,
     });
   }
 
@@ -69,8 +70,8 @@ export class EventService {
   //Update an event
 
   //Delete an event
-  deleteEventById(id: string) {
-    return this.prismaService.event.delete({
+  async deleteEventById(id: string) {
+    await this.prismaService.event.delete({
       where: {
         id,
       },
