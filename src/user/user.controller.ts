@@ -1,4 +1,15 @@
-import { Controller } from '@nestjs/common';
+import { Controller, UseGuards, Get, Delete, Put } from '@nestjs/common';
+import { AuthGuard, JWTPayloadType } from 'src/guards/auth.guards';
+import { UserService } from './user.service';
+import { User } from './decorators/auth.decorators';
 
 @Controller('user')
-export class UserController {}
+@UseGuards(AuthGuard)
+export class UserController {
+  constructor(private readonly userService: UserService) {}
+
+  @Get()
+  getUsers(@User() userPayload: JWTPayloadType) {
+    return this.userService.getUsers(userPayload.id);
+  }
+}
