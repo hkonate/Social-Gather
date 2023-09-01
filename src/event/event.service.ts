@@ -32,6 +32,13 @@ const select = {
       ...creatorSelect,
     },
   },
+  listOfAttendees: {
+    select: {
+      id: true,
+      pseudo: true,
+      picture: true,
+    },
+  },
 };
 @Injectable()
 export class EventService {
@@ -54,14 +61,18 @@ export class EventService {
     return event;
   }
   //Create an event
-  createEvent({ title, description, schedule, inclusive }: CreateEventParams) {
+  createEvent(
+    { title, description, schedule, inclusive }: CreateEventParams,
+    userId: string,
+  ) {
     return this.prismaService.event.create({
       data: {
         title,
         description,
         schedule,
         inclusive,
-        creatorId: '108fa9c9-b83f-4de8-8daf-f720a7ee9a97',
+        menu: 'good',
+        creatorId: userId,
       },
       select,
     });
@@ -69,11 +80,51 @@ export class EventService {
 
   //Join/Unjoin an event
   async attendEvent(id: string, attend: boolean, userPayload: JWTPayloadType) {
-    // if(attend){
-    //   const attendee = await this.prismaService.event.findMany({
-    //     where:
-    //   })
-    // }
+    const event = await this.prismaService.event.findUnique({
+      where: {
+        id,
+      },
+      select: {
+        listOfAttendees: {
+          select: {
+            id: true,
+          },
+        },
+      },
+    });
+
+    if (!event) {
+      throw new NotFoundException();
+    }
+    if (attend) {
+      return this.prismaService.event.update({
+        where: {
+          id,
+        },
+        data: {
+          listOfAttendees: {
+            connect: {
+              id: userPayload.id,
+            },
+          },
+        },
+        select,
+      });
+    } else {
+      return this.prismaService.event.update({
+        where: {
+          id,
+        },
+        data: {
+          listOfAttendees: {
+            disconnect: {
+              id: userPayload.id,
+            },
+          },
+        },
+        select,
+      });
+    }
   }
   //Update an event
 

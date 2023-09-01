@@ -43,7 +43,7 @@ model Event{
   inclusive                 InclusionType[]
   creatorId                 String @db.Uuid
   creator                   User @relation("event_created",fields: [creatorId], references: [id])
-  ListOfAttendees           User[] 
+  listOfAttendees           User[] 
   room                      Message[]
   createdAt                 DateTime @default(now())
   updatedAt                 DateTime @updatedAt

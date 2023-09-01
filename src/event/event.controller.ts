@@ -30,8 +30,11 @@ export class EventController {
   }
 
   @Post()
-  createEvent(@Body() body: CreateEventDTO) {
-    return this.eventService.createEvent(body);
+  createEvent(
+    @Body() body: CreateEventDTO,
+    @User() userPayload: JWTPayloadType,
+  ) {
+    return this.eventService.createEvent(body, userPayload.id);
   }
 
   @Put('/:id/:attend')
