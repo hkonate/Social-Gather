@@ -49,7 +49,10 @@ export class EventController {
   }
 
   @Delete('/:id')
-  deleteEventById(@Param('id', ParseUUIDPipe) id: string) {
-    return this.eventService.deleteEventById(id);
+  deleteEventById(
+    @Param('id', ParseUUIDPipe) id: string,
+    @User() userPayload: JWTPayloadType,
+  ) {
+    return this.eventService.deleteEventById(id, userPayload.id);
   }
 }

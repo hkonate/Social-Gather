@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InclusionType } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import * as jwt from 'jsonwebtoken';
@@ -129,12 +133,26 @@ export class EventService {
   //Update an event
 
   //Delete an event
-  async deleteEventById(id: string) {
-    await this.prismaService.event.delete({
-      where: {
-        id,
+  async deleteEventById(id: string, userId: string) {
+    const event = await this.prismaService.event.findUnique({
+      where: { id },
+      select: {
+        creatorId: true,
       },
-      select,
     });
+    if (!event) {
+      throw new NotFoundException();
+    }
+
+    if (userId === event.creatorId) {
+      await this.prismaService.event.delete({
+        where: {
+          id,
+        },
+        select,
+      });
+    } else {
+      throw new UnauthorizedException();
+    }
   }
 }
