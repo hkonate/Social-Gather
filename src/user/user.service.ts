@@ -1,5 +1,14 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
+import * as jwt from 'jsonwebtoken';
+interface UpdateUserParams {
+  firstname?: string;
+  lastname?: string;
+  pseudo?: string;
+  phone?: string;
+  email?: string;
+  password?: string;
+}
 
 const select = {
   id: true,
@@ -27,7 +36,24 @@ export class UserService {
     return users.filter((user) => user.id !== userId);
   }
 
-  async getUser(userId: string) {
+  getUser(userId: string) {
+    return this.doesUserExist(userId);
+  }
+
+  async updateUser(userId: string, data: UpdateUserParams) {
+    await this.doesUserExist(userId);
+    if (data.password) {
+      data.password = jwt.sign(data.password, process.env.JSON_WEB_KEY);
+      return this.prismaService.user.update({
+        where: {
+          id: userId,
+        },
+        data,
+      });
+    }
+  }
+
+  private async doesUserExist(userId: string) {
     const user = await this.prismaService.user.findUnique({
       where: {
         id: userId,
@@ -39,8 +65,6 @@ export class UserService {
     }
     return user;
   }
-
-  async updateUser(userID: string, body) {}
 }
 
 // Peter eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoic3BpZGVybWFuIiwiaWQiOiJhYzY3ODI1ZS03NDk1LTRjNWUtYjg0MS1iODBkYThkYzMyMWMiLCJpYXQiOjE2OTM1NzgzNjYsImV4cCI6MTY5NzE3ODM2Nn0.7EB5eNVfuru9lUcWsCxqI1zCJ_Pt_fiDZrQ4n9KUqWU
