@@ -39,6 +39,10 @@ export class CreateEventDTO {
   @IsNotEmpty()
   schedule: string;
 
+  @IsString()
+  @IsNotEmpty()
+  address: string;
+
   @IsOptional()
   @IsString()
   @IsNotEmpty()
@@ -50,7 +54,7 @@ export class CreateEventDTO {
   inclusive: InclusionType[];
 }
 
-export class updateEventDTO {
+export class UpdateEventDTO {
   @IsOptional()
   @IsString()
   @IsNotEmpty()
@@ -67,10 +71,14 @@ export class updateEventDTO {
   schedule?: string;
 
   @IsOptional()
-  @IsOptional()
   @IsString()
   @IsNotEmpty()
   menu?: string;
+
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  adress?: string;
 
   @IsOptional()
   @IsArray()

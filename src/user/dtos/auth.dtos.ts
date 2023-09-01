@@ -38,11 +38,6 @@ export class SignupDTO {
     },
   )
   password: string;
-
-  @IsOptional()
-  @IsString()
-  @IsNotEmpty()
-  picture?: string;
 }
 
 export class SigninDTO {

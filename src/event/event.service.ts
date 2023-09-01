@@ -11,6 +11,8 @@ interface CreateEventParams {
   title: string;
   description: string;
   schedule: string;
+  address: string;
+  menu?: string;
   inclusive: InclusionType[];
 }
 
@@ -18,6 +20,7 @@ interface UpdateEvent {
   title?: string;
   description?: string;
   schedule?: string;
+  address?: string;
   menu?: string;
   inclusive?: InclusionType[];
 }
@@ -26,6 +29,7 @@ const eventSelect = {
   title: true,
   description: true,
   schedule: true,
+  address: true,
   inclusive: true,
 };
 
@@ -67,7 +71,14 @@ export class EventService {
   }
   //Create an event
   createEvent(
-    { title, description, schedule, inclusive }: CreateEventParams,
+    {
+      title,
+      description,
+      schedule,
+      inclusive,
+      menu,
+      address,
+    }: CreateEventParams,
     userId: string,
   ) {
     return this.prismaService.event.create({
@@ -76,7 +87,8 @@ export class EventService {
         description,
         schedule,
         inclusive,
-        menu: 'good',
+        menu,
+        address,
         creatorId: userId,
       },
       select,
@@ -117,8 +129,15 @@ export class EventService {
     }
   }
   //Update an event
-  async updateEventById(id: string, userId: string, body: UpdateEvent) {
+  async updateEventById(id: string, userId: string, data: UpdateEvent) {
     await this.doesUserHasAuthorization(id, userId);
+    return this.prismaService.event.update({
+      where: {
+        id,
+      },
+      data,
+      select,
+    });
   }
   //Delete an event
   async deleteEventById(id: string, userId: string) {

@@ -9,7 +9,6 @@ interface SignupParams {
   phone?: string;
   email: string;
   password: string;
-  picture?: string;
 }
 
 interface SigninParams {
@@ -28,7 +27,6 @@ export class AuthService {
     phone,
     email,
     password,
-    picture,
   }: SignupParams) {
     const userExist = await this.prismaService.user.findUnique({
       where: { email },
@@ -57,7 +55,6 @@ export class AuthService {
         phone,
         email,
         password: hashedPassword,
-        picture,
       },
     });
     return this.generateJWT(user.pseudo, user.id);

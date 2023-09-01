@@ -18,7 +18,6 @@ model User {
   phone                     String
   email                     String @unique
   password                  String
-  picture                   String
   profile                   Profile?
   listOfEventsCreated       Event[] @relation("event_created")
   listOfEventsToAttend      Event[]
@@ -30,6 +29,7 @@ model User {
 model Profile{
   id                        String @id  @default(dbgenerated("gen_random_uuid()"))  @db.Uuid
   bio                       String
+  picture                   String
   userId                    String @unique @db.Uuid
   user                      User @relation(fields: [userId], references: [id])
 }
@@ -40,6 +40,7 @@ model Event{
   description               String
   schedule                  String
   menu                      String
+  address                    String
   inclusive                 InclusionType[]
   creatorId                 String @db.Uuid
   creator                   User @relation("event_created",fields: [creatorId], references: [id])
