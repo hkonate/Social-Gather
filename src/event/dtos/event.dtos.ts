@@ -42,7 +42,7 @@ export class CreateEventDTO {
   @IsOptional()
   @IsString()
   @IsNotEmpty()
-  menu: string;
+  menu?: string;
 
   @IsArray()
   @IsEnum(InclusionType, { each: true })
@@ -54,27 +54,27 @@ export class updateEventDTO {
   @IsOptional()
   @IsString()
   @IsNotEmpty()
-  title: string;
+  title?: string;
 
   @IsOptional()
   @IsString()
   @IsNotEmpty()
-  description: string;
+  description?: string;
 
   @IsOptional()
   @IsString()
   @IsNotEmpty()
-  schedule: string;
+  schedule?: string;
 
   @IsOptional()
   @IsOptional()
   @IsString()
   @IsNotEmpty()
-  menu: string;
+  menu?: string;
 
   @IsOptional()
   @IsArray()
   @IsEnum(InclusionType, { each: true })
   @Validate(IsNotDuplicate)
-  inclusive: InclusionType[];
+  inclusive?: InclusionType[];
 }

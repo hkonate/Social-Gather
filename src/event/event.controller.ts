@@ -43,7 +43,7 @@ export class EventController {
     @Body() body: updateEventDTO,
     @User() userPayload: JWTPayloadType,
   ) {
-    return this.eventService.updateEventById(id, body, userPayload.id);
+    return this.eventService.updateEventById(id, userPayload.id, body);
   }
 
   @Put('/:id/:attend')
