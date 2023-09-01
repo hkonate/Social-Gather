@@ -118,22 +118,17 @@ export class EventService {
   }
   //Update an event
   async updateEventById(id: string, userId: string, body: UpdateEvent) {
-    const event = await this.doesEventExists(id);
+    await this.doesUserHasAuthorization(id, userId);
   }
   //Delete an event
   async deleteEventById(id: string, userId: string) {
-    const event = await this.doesEventExists(id);
-
-    if (userId === event.creatorId) {
-      await this.prismaService.event.delete({
-        where: {
-          id,
-        },
-        select,
-      });
-    } else {
-      throw new UnauthorizedException();
-    }
+    await this.doesUserHasAuthorization(id, userId);
+    await this.prismaService.event.delete({
+      where: {
+        id,
+      },
+      select,
+    });
   }
   private async doesEventExists(eventId: string) {
     const event = await this.prismaService.event.findUnique({
@@ -143,5 +138,12 @@ export class EventService {
       throw new NotFoundException();
     }
     return event;
+  }
+
+  private async doesUserHasAuthorization(eventId: string, userId: string) {
+    const event = await this.doesEventExists(eventId);
+    if (event.creatorId !== userId) {
+      throw new UnauthorizedException();
+    }
   }
 }
