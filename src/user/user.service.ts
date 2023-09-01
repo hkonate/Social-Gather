@@ -1,11 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 
-interface UpdateProfileParam {
-  bio: string;
-  picture: string;
-}
-
 const select = {
   id: true,
   pseudo: true,
@@ -30,21 +25,6 @@ export class UserService {
       throw new NotFoundException();
     }
     return users.filter((user) => user.id !== userId);
-  }
-
-  createProfile(userId: string, { bio, picture }: UpdateProfileParam) {
-    //todo check if profile already exist
-    return this.prismaService.profile.create({
-      data: {
-        bio,
-        picture,
-        user: {
-          connect: {
-            id: userId,
-          },
-        },
-      },
-    });
   }
 }
 

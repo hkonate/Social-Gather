@@ -4,10 +4,12 @@ import { AuthService } from './auth/auth.service';
 import { PrismaModule } from 'src/prisma/prisma.module';
 import { UserService } from './user.service';
 import { UserController } from './user.controller';
+import { ProfileController } from './profile/profile.controller';
+import { ProfileService } from './profile/profile.service';
 
 @Module({
   imports: [PrismaModule],
-  controllers: [AuthController, UserController],
-  providers: [AuthService, UserService],
+  controllers: [AuthController, UserController, ProfileController],
+  providers: [AuthService, UserService, ProfileService],
 })
 export class UserModule {}
