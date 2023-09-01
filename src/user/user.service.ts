@@ -26,6 +26,21 @@ export class UserService {
     }
     return users.filter((user) => user.id !== userId);
   }
+
+  async getUser(userId: string) {
+    const user = await this.prismaService.user.findUnique({
+      where: {
+        id: userId,
+      },
+      select,
+    });
+    if (!user) {
+      throw new NotFoundException();
+    }
+    return user;
+  }
+
+  async updateUser(userID: string, body) {}
 }
 
 // Peter eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoic3BpZGVybWFuIiwiaWQiOiJhYzY3ODI1ZS03NDk1LTRjNWUtYjg0MS1iODBkYThkYzMyMWMiLCJpYXQiOjE2OTM1NzgzNjYsImV4cCI6MTY5NzE3ODM2Nn0.7EB5eNVfuru9lUcWsCxqI1zCJ_Pt_fiDZrQ4n9KUqWU

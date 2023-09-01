@@ -1,7 +1,7 @@
 import { Controller, UseGuards, Post, Body } from '@nestjs/common';
 import { ProfileService } from './profile.service';
 import { User } from 'src/user/decorators/auth.decorators';
-import { UpdateProfileDTO } from 'src/user/dtos/user.dtos';
+import { UpdateProfileDTO } from 'src/user/dtos/profile.dtos';
 import { AuthGuard, JWTPayloadType } from 'src/guards/auth.guards';
 
 @Controller('profile')

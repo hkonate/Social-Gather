@@ -1,10 +1,33 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
-export class UpdateProfileDTO {
+export class UpdateUserDTO {
+  @IsOptional()
   @IsString()
   @IsNotEmpty()
-  bio: string;
+  firstname?: string;
+
+  @IsOptional()
   @IsString()
   @IsNotEmpty()
-  picture: string;
+  lastname?: string;
+
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  pseudo?: string;
+
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  phone?: string;
+
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  email?: string;
+
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  password?: string;
 }
