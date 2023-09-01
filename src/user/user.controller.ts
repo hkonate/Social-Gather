@@ -33,4 +33,9 @@ export class UserController {
   updateUser(@User() userPayload: JWTPayloadType, @Body() body: UpdateUserDTO) {
     return this.userService.updateUser(userPayload.id, body);
   }
+
+  @Delete()
+  deleteUser(@User() userPayload: JWTPayloadType) {
+    return this.userService.deleteUser(userPayload.id);
+  }
 }

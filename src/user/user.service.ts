@@ -44,14 +44,16 @@ export class UserService {
     await this.doesUserExist(userId);
     if (data.password) {
       data.password = jwt.sign(data.password, process.env.JSON_WEB_KEY);
-      return this.prismaService.user.update({
-        where: {
-          id: userId,
-        },
-        data,
-      });
     }
+    return this.prismaService.user.update({
+      where: {
+        id: userId,
+      },
+      data,
+    });
   }
+
+  async deleteUser(userId: string) {}
 
   private async doesUserExist(userId: string) {
     const user = await this.prismaService.user.findUnique({
