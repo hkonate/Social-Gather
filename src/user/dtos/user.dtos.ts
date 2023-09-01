@@ -1,1 +1,4 @@
-export class GetUsersResponseDTO {}
+export class UpdateProfileDTO {
+  bio: string;
+  picture: string;
+}
