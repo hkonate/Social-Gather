@@ -31,3 +31,14 @@ export class UpdateUserDTO {
   @IsNotEmpty()
   password?: string;
 }
+
+export class UserResponsesDTO {
+  id: string;
+  pseudo: string;
+  phone: string;
+  email: string;
+  profile: {
+    bio: string;
+    picture: string;
+  };
+}
