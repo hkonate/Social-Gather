@@ -149,6 +149,7 @@ export class EventService {
   private async doesEventExists(eventId: string) {
     const event = await this.prismaService.event.findUnique({
       where: { id: eventId },
+      select,
     });
     if (!event) {
       throw new NotFoundException();
@@ -158,7 +159,7 @@ export class EventService {
 
   private async doesUserHasAuthorization(eventId: string, userId: string) {
     const event = await this.doesEventExists(eventId);
-    if (event.creatorId !== userId) {
+    if (event.creator.id !== userId) {
       throw new UnauthorizedException();
     }
   }

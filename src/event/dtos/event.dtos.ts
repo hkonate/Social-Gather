@@ -86,3 +86,21 @@ export class UpdateEventDTO {
   @Validate(IsNotDuplicate)
   inclusive?: InclusionType[];
 }
+
+export class EventResponsesDTO {
+  title: string;
+  description: string;
+  schedule: string;
+  address: string;
+  inclusive: $Enums.InclusionType[];
+  creator: {
+    id: string;
+    pseudo: string;
+    phone: string;
+    email: string;
+  };
+  listOfAttendees: {
+    id: string;
+    pseudo: string;
+  }[];
+}
