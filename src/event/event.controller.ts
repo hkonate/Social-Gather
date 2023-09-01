@@ -8,12 +8,15 @@ import {
   ParseUUIDPipe,
   Param,
   ParseBoolPipe,
-  Query,
+  UseGuards,
 } from '@nestjs/common';
 import { CreateEventDTO } from './dtos/event.dtos';
 import { EventService } from './event.service';
+import { AuthGuard, JWTPayloadType } from 'src/guards/auth.guards';
+import { User } from 'src/user/decorators/auth.decorators';
 
 @Controller('event')
+@UseGuards(AuthGuard)
 export class EventController {
   constructor(private readonly eventService: EventService) {}
   @Get()
@@ -35,8 +38,11 @@ export class EventController {
   attendEvent(
     @Param('id', ParseUUIDPipe) id: string,
     @Param('attend', ParseBoolPipe) attend: boolean,
+    @User() userPayload: JWTPayloadType,
   ) {
-    return this.eventService.attendEvent(id, attend);
+    console.log(userPayload, 'controller');
+
+    return this.eventService.attendEvent(id, attend, userPayload);
   }
 
   @Delete('/:id')

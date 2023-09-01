@@ -1,6 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InclusionType } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
+import * as jwt from 'jsonwebtoken';
+import { JWTPayloadType } from 'src/guards/auth.guards';
 
 interface CreateEventParams {
   title: string;
@@ -66,7 +68,13 @@ export class EventService {
   }
 
   //Join/Unjoin an event
-  attendEvent(id: string, attend: boolean) {}
+  async attendEvent(id: string, attend: boolean, userPayload: JWTPayloadType) {
+    // if(attend){
+    //   const attendee = await this.prismaService.event.findMany({
+    //     where:
+    //   })
+    // }
+  }
   //Update an event
 
   //Delete an event
