@@ -38,9 +38,7 @@ const creatorSelect = {
   pseudo: true,
   phone: true,
   email: true,
-  picture: true,
 };
-
 const select = {
   ...eventSelect,
   creator: {
@@ -52,7 +50,6 @@ const select = {
     select: {
       id: true,
       pseudo: true,
-      picture: true,
     },
   },
 };
