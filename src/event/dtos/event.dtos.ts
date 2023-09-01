@@ -4,6 +4,7 @@ import {
   IsArray,
   IsEnum,
   IsNotEmpty,
+  IsOptional,
   IsString,
   Validate,
   ValidationArguments,
@@ -38,6 +39,40 @@ export class CreateEventDTO {
   @IsNotEmpty()
   schedule: string;
 
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  menu: string;
+
+  @IsArray()
+  @IsEnum(InclusionType, { each: true })
+  @Validate(IsNotDuplicate)
+  inclusive: InclusionType[];
+}
+
+export class updateEventDTO {
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  title: string;
+
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  description: string;
+
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  schedule: string;
+
+  @IsOptional()
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  menu: string;
+
+  @IsOptional()
   @IsArray()
   @IsEnum(InclusionType, { each: true })
   @Validate(IsNotDuplicate)

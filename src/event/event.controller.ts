@@ -10,7 +10,7 @@ import {
   ParseBoolPipe,
   UseGuards,
 } from '@nestjs/common';
-import { CreateEventDTO } from './dtos/event.dtos';
+import { CreateEventDTO, updateEventDTO } from './dtos/event.dtos';
 import { EventService } from './event.service';
 import { AuthGuard, JWTPayloadType } from 'src/guards/auth.guards';
 import { User } from 'src/user/decorators/auth.decorators';
@@ -35,6 +35,15 @@ export class EventController {
     @User() userPayload: JWTPayloadType,
   ) {
     return this.eventService.createEvent(body, userPayload.id);
+  }
+
+  @Put('/:id')
+  updateEventById(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() body: updateEventDTO,
+    @User() userPayload: JWTPayloadType,
+  ) {
+    return this.eventService.updateEventById(id, body, userPayload.id);
   }
 
   @Put('/:id/:attend')

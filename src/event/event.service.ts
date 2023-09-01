@@ -5,7 +5,6 @@ import {
 } from '@nestjs/common';
 import { InclusionType } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
-import * as jwt from 'jsonwebtoken';
 import { JWTPayloadType } from 'src/guards/auth.guards';
 
 interface CreateEventParams {
@@ -13,6 +12,14 @@ interface CreateEventParams {
   description: string;
   schedule: string;
   inclusive: InclusionType[];
+}
+
+interface UpdateEvent {
+  title?: string;
+  description?: string;
+  schedule?: string;
+  menu?: string;
+  inclusive?: InclusionType[];
 }
 
 const eventSelect = {
@@ -23,6 +30,7 @@ const eventSelect = {
 };
 
 const creatorSelect = {
+  id: true,
   pseudo: true,
   phone: true,
   email: true,
@@ -54,15 +62,8 @@ export class EventService {
     });
   }
   //Get one event
-  async getEventById(id: string) {
-    const event = await this.prismaService.event.findUnique({
-      where: { id },
-      select,
-    });
-    if (!event) {
-      throw new NotFoundException();
-    }
-    return event;
+  getEventById(id: string) {
+    return this.doesEventExists(id);
   }
   //Create an event
   createEvent(
@@ -84,22 +85,7 @@ export class EventService {
 
   //Join/Unjoin an event
   async attendEvent(id: string, attend: boolean, userPayload: JWTPayloadType) {
-    const event = await this.prismaService.event.findUnique({
-      where: {
-        id,
-      },
-      select: {
-        listOfAttendees: {
-          select: {
-            id: true,
-          },
-        },
-      },
-    });
-
-    if (!event) {
-      throw new NotFoundException();
-    }
+    await this.doesEventExists(id);
     if (attend) {
       return this.prismaService.event.update({
         where: {
@@ -131,18 +117,12 @@ export class EventService {
     }
   }
   //Update an event
-
+  async updateEventById(id: string, userId: string, body: UpdateEvent) {
+    const event = await this.doesEventExists(id);
+  }
   //Delete an event
   async deleteEventById(id: string, userId: string) {
-    const event = await this.prismaService.event.findUnique({
-      where: { id },
-      select: {
-        creatorId: true,
-      },
-    });
-    if (!event) {
-      throw new NotFoundException();
-    }
+    const event = await this.doesEventExists(id);
 
     if (userId === event.creatorId) {
       await this.prismaService.event.delete({
@@ -154,5 +134,14 @@ export class EventService {
     } else {
       throw new UnauthorizedException();
     }
+  }
+  private async doesEventExists(eventId: string) {
+    const event = await this.prismaService.event.findUnique({
+      where: { id: eventId },
+    });
+    if (!event) {
+      throw new NotFoundException();
+    }
+    return event;
   }
 }
