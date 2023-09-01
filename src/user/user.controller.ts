@@ -1,4 +1,12 @@
-import { Controller, UseGuards, Get, Delete, Put, Body } from '@nestjs/common';
+import {
+  Controller,
+  UseGuards,
+  Get,
+  Delete,
+  Post,
+  Put,
+  Body,
+} from '@nestjs/common';
 import { AuthGuard, JWTPayloadType } from 'src/guards/auth.guards';
 import { UserService } from './user.service';
 import { User } from './decorators/auth.decorators';
@@ -14,11 +22,13 @@ export class UserController {
     return this.userService.getUsers(userPayload.id);
   }
 
-  @Put()
-  updateProfile(
+  @Post()
+  createProfile(
     @User() userPayload: JWTPayloadType,
     @Body() body: UpdateProfileDTO,
   ) {
-    return this.userService.updateProfile(userPayload.id, body);
+    console.log(body);
+
+    return this.userService.createProfile(userPayload.id, body);
   }
 }
