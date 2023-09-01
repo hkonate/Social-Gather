@@ -12,4 +12,9 @@ export class UserController {
   getUsers(@User() userPayload: JWTPayloadType) {
     return this.userService.getUsers(userPayload.id);
   }
+
+  @Put()
+  updateProfile(@User() userPayload: JWTPayloadType) {
+    return this.userService.updateProfile(userPayload.id);
+  }
 }
