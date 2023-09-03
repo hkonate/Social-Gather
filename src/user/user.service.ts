@@ -10,7 +10,7 @@ interface UpdateUserParams {
   password?: string;
 }
 
-const select = {
+export const select = {
   id: true,
   pseudo: true,
   phone: true,

@@ -8,3 +8,10 @@ export class UpdateProfileDTO {
   @IsNotEmpty()
   picture: string;
 }
+
+export class ProfileResponsesDTO {
+  id: string;
+  bio: string;
+  picture: string;
+  userId: string;
+}
