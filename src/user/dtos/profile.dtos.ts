@@ -25,5 +25,10 @@ export class ProfileResponsesDTO {
   id: string;
   bio: string;
   picture: string;
-  userId: string;
+  user: {
+    id: string;
+    pseudo: string;
+    phone: string;
+    email: string;
+  };
 }

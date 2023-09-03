@@ -31,7 +31,9 @@ export class ProfileController {
   }
 
   @Get('/:id')
-  getProfile(@Param('id', ParseUUIDPipe) id: string) {
+  getProfile(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<ProfileResponsesDTO> {
     return this.profileService.getProfile(id);
   }
 
@@ -40,7 +42,7 @@ export class ProfileController {
     @Param('id', ParseUUIDPipe) id: string,
     @User() userPayload: JWTPayloadType,
     @Body() body: UpdateProfileDTO,
-  ) {
+  ): Promise<ProfileResponsesDTO> {
     return this.profileService.updateProfile(id, userPayload.id, body);
   }
 }
