@@ -7,7 +7,6 @@ import {
   Param,
   Get,
   Put,
-  Delete,
 } from '@nestjs/common';
 import { ProfileService } from './profile.service';
 import { User } from 'src/user/decorators/auth.decorators';
