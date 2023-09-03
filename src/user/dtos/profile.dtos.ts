@@ -1,9 +1,21 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
-export class UpdateProfileDTO {
+export class CreateProfileDTO {
   @IsString()
   @IsNotEmpty()
   bio: string;
+  @IsString()
+  @IsNotEmpty()
+  picture: string;
+}
+
+export class UpdateProfileDTO {
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  bio: string;
+
+  @IsOptional()
   @IsString()
   @IsNotEmpty()
   picture: string;
