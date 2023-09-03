@@ -50,7 +50,9 @@ export class ProfileService {
     });
   }
 
-  async getProfile(id: string) {}
+  async getProfile(id: string) {
+    return this.doesProfileExists(id);
+  }
 
   private async doesProfileExists(id: string) {
     const profile = await this.prismaService.profile.findUnique({
