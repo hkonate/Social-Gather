@@ -10,6 +10,20 @@ interface UpdateProfileParam {
   picture: string;
 }
 
+const profileSelect = {
+  id: true,
+  bio: true,
+  picture: true,
+  user: {
+    select: {
+      id: true,
+      pseudo: true,
+      phone: true,
+      email: true,
+    },
+  },
+};
+
 @Injectable()
 export class ProfileService {
   constructor(private readonly prismaService: PrismaService) {}
@@ -36,5 +50,20 @@ export class ProfileService {
     });
   }
 
-  async getProfile() {}
+  async getProfile(id: string) {}
+
+  private async doesProfileExists(id: string) {
+    const profile = await this.prismaService.profile.findUnique({
+      where: {
+        id,
+      },
+      select: {
+        ...profileSelect,
+      },
+    });
+    if (!profile) {
+      throw new NotFoundException();
+    }
+    return profile;
+  }
 }
