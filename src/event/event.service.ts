@@ -26,6 +26,7 @@ interface UpdateEvent {
 }
 
 const eventSelect = {
+  id: true,
   title: true,
   description: true,
   schedule: true,
@@ -67,7 +68,7 @@ export class EventService {
     return this.doesEventExists(id);
   }
   //Create an event
-  createEvent(
+  async createEvent(
     {
       title,
       description,
@@ -87,6 +88,13 @@ export class EventService {
         menu,
         address,
         creatorId: userId,
+        room: {
+          create: {
+            conversation:
+              'Nous valorisons la bienveillance et le respect mutuel dans cette chat room. Veuillez contribuer à créer un environnement positif pour toutes et tous les participant(e)s. 🌟',
+            authorId: userId,
+          },
+        },
       },
       select,
     });
@@ -164,3 +172,5 @@ export class EventService {
     }
   }
 }
+
+//Nous valorisons la bienveillance et le respect mutuel dans cette chat room. Veuillez contribuer à créer un environnement positif pour toutes et tous les participant(e)s. 🌟

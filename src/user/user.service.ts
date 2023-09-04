@@ -37,11 +37,13 @@ export class UserService {
   }
 
   getUser(userId: string) {
-    return this.doesUserExist(userId);
+    return this.prismaService.user.findUnique({
+      where: { id: userId },
+      select,
+    });
   }
 
   async updateUser(userId: string, data: UpdateUserParams) {
-    await this.doesUserExist(userId);
     if (data.password) {
       data.password = jwt.sign(data.password, process.env.JSON_WEB_KEY);
     }
@@ -55,7 +57,6 @@ export class UserService {
   }
 
   async deleteUser(userId: string) {
-    await this.doesUserExist(userId);
     await this.prismaService.profile.delete({
       where: {
         userId,
@@ -66,19 +67,6 @@ export class UserService {
         id: userId,
       },
     });
-  }
-
-  private async doesUserExist(userId: string) {
-    const user = await this.prismaService.user.findUnique({
-      where: {
-        id: userId,
-      },
-      select,
-    });
-    if (!user) {
-      throw new NotFoundException();
-    }
-    return user;
   }
 }
 
