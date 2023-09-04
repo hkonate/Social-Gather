@@ -147,6 +147,11 @@ export class EventService {
   //Delete an event
   async deleteEventById(id: string, userId: string) {
     await this.doesUserHasAuthorization(id, userId);
+    await this.prismaService.message.deleteMany({
+      where: {
+        eventId: id,
+      },
+    });
     await this.prismaService.event.delete({
       where: {
         id,
