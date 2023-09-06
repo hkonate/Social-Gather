@@ -2,12 +2,11 @@ import { Module } from '@nestjs/common';
 import { ChatService } from './chat.service';
 import { ChatController } from './chat.controller';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { EventService } from 'src/event/event.service';
 
 @Module({
-  imports: [PrismaService],
+  imports: [PrismaService, EventService],
   providers: [ChatService],
   controllers: [ChatController],
 })
-export class ChatModule {
-  constructor(private readonly chatService: ChatService) {}
-}
+export class ChatModule {}
