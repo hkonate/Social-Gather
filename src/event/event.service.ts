@@ -102,6 +102,7 @@ export class EventService {
 
   //Join/Unjoin an event
   async attendEvent(id: string, attend: boolean, userPayload: JWTPayloadType) {
+    //todo add checker that block event's attend at a time
     await this.doesEventExists(id);
     if (attend) {
       return this.prismaService.event.update({
@@ -177,5 +178,3 @@ export class EventService {
     }
   }
 }
-
-//Nous valorisons la bienveillance et le respect mutuel dans cette chat room. Veuillez contribuer à créer un environnement positif pour toutes et tous les participant(e)s. 🌟
