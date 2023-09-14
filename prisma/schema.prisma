@@ -39,13 +39,14 @@ model Event{
   title                     String @db.Char(50)
   description               String
   schedule                  String
-  menu                      String
+  menu                      String @default("")
   address                   String
+  limit                     String  @default("20")
   inclusive                 InclusionType[]
   creatorId                 String @db.Uuid
   creator                   User @relation("event_created",fields: [creatorId], references: [id])
   listOfAttendees           User[] 
-  room                      Message[]
+  chat                      Message[]
   createdAt                 DateTime @default(now())
   updatedAt                 DateTime @updatedAt
 }

@@ -57,16 +57,20 @@ export class UserService {
   }
 
   async deleteUser(userId: string) {
-    await this.prismaService.profile.delete({
-      where: {
-        userId,
-      },
-    });
-    await this.prismaService.user.delete({
+    const res = await this.prismaService.user.delete({
       where: {
         id: userId,
       },
+      select: {
+        profile: true,
+      },
     });
+    if (res.profile)
+      await this.prismaService.profile.delete({
+        where: {
+          userId,
+        },
+      });
   }
 }
 
@@ -74,3 +78,4 @@ export class UserService {
 // John  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiam9obmRvZSIsImlkIjoiZmJjMzg4NzMtZTExNi00NzU3LWJjNzMtYzAwZTlkYTdkNjU4IiwiaWF0IjoxNjkzNTc4NDMxLCJleHAiOjE2OTcxNzg0MzF9.7uXladmqgOgzgzCFwAJ3leBEq-M7Bg2qqx57Xl-Flvk
 // lebron eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiTGVraW5nIiwiaWQiOiJkZmQ5ZDBhMi1hMGJhLTQ0ZmYtODQ4MS1hMjZjMDM1ZTFmOWMiLCJpYXQiOjE2OTM1Nzg1MjgsImV4cCI6MTY5NzE3ODUyOH0.aBcmAMASWSDansv3UTSUsCTmHzSrWqvRrno2tGbFq6g
 // mojojojo eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoibW9tbyIsImlkIjoiNTk3Mzk1YTMtMTVkMS00ZGNhLTg5NjMtYWIzMmUwNWVmMzcwIiwiaWF0IjoxNjkzNTc4NjEzLCJleHAiOjE2OTcxNzg2MTN9.GNZymjNYuSIn4rRHXlGhbcdVcCjvhUJPZKa9PqJpzaQ
+// test eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGVzdCIsImlkIjoiN2QzNGUzYzEtZjIxYi00Y2Q5LTg4MTgtY2M5M2VmZDQyZjZjIiwiaWF0IjoxNjk0NzAwNzgwLCJleHAiOjE2OTgzMDA3ODB9.DCu4lNfNXTTLuSi4SOR7kTIkc-5cUhTLLq_1rT2tHFg

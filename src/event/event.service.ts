@@ -13,6 +13,7 @@ interface CreateEventParams {
   schedule: string;
   address: string;
   menu?: string;
+  limit?: string;
   inclusive: InclusionType[];
 }
 
@@ -32,6 +33,8 @@ const eventSelect = {
   schedule: true,
   address: true,
   inclusive: true,
+  limit: true,
+  menu: true,
 };
 
 const creatorSelect = {
@@ -50,7 +53,6 @@ const select = {
   listOfAttendees: {
     select: {
       id: true,
-      pseudo: true,
     },
   },
 };
@@ -75,6 +77,7 @@ export class EventService {
       schedule,
       inclusive,
       menu,
+      limit,
       address,
     }: CreateEventParams,
     userId: string,
@@ -85,13 +88,19 @@ export class EventService {
         description,
         schedule,
         inclusive,
-        menu,
+        ...(menu && { menu }),
+        ...(limit && { limit }),
         address,
+        listOfAttendees: {
+          connect: {
+            id: userId,
+          },
+        },
         creatorId: userId,
-        room: {
+        chat: {
           create: {
             conversation:
-              'Nous valorisons la bienveillance et le respect mutuel dans cette chat room. Veuillez contribuer à créer un environnement positif pour toutes et tous les participant(e)s. 🌟',
+              'Nous valorisons la bienveillance et le respect mutuel dans cette chat chat. Veuillez contribuer à créer un environnement positif pour toutes et tous les participant(e)s. 🌟',
             authorId: userId,
           },
         },
@@ -104,20 +113,24 @@ export class EventService {
   async attendEvent(id: string, attend: boolean, userPayload: JWTPayloadType) {
     //todo add checker that block event's attend at a time
     await this.doesEventExists(id);
+    const { limit, listOfAttendees, creator } = await this.getEventById(id);
+    if (creator.id === userPayload.id) throw new UnauthorizedException();
     if (attend) {
-      return this.prismaService.event.update({
-        where: {
-          id,
-        },
-        data: {
-          listOfAttendees: {
-            connect: {
-              id: userPayload.id,
+      if (listOfAttendees.length < parseInt(limit))
+        return this.prismaService.event.update({
+          where: {
+            id,
+          },
+          data: {
+            listOfAttendees: {
+              connect: {
+                id: userPayload.id,
+              },
             },
           },
-        },
-        select,
-      });
+          select,
+        });
+      throw new UnauthorizedException();
     } else {
       return this.prismaService.event.update({
         where: {

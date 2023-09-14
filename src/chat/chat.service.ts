@@ -1,6 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { EventService } from 'src/event/event.service';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { GetMessagesResponseDto } from './dtos/chat.dtos';
 
 const chatSelector = {
   id: true,
@@ -21,7 +22,7 @@ export class ChatService {
     private readonly eventService: EventService,
   ) {}
 
-  async getMessages(eventId: string) {
+  async getMessages(eventId: string): Promise<GetMessagesResponseDto[]> {
     await this.eventService.getEventById(eventId);
     const chat = this.prismaService.message.findMany({
       where: {
@@ -32,7 +33,7 @@ export class ChatService {
       },
     });
     if (!chat) {
-      return [];
+      throw new NotFoundException();
     }
     return chat;
   }

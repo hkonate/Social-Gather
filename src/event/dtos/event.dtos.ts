@@ -1,5 +1,4 @@
 import { $Enums, InclusionType } from '@prisma/client';
-import { Exclude } from 'class-transformer';
 import {
   IsArray,
   IsEnum,
@@ -46,6 +45,11 @@ export class CreateEventDTO {
   @IsOptional()
   @IsString()
   @IsNotEmpty()
+  limit?: string;
+
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
   menu?: string;
 
   @IsArray()
@@ -81,6 +85,11 @@ export class UpdateEventDTO {
   adress?: string;
 
   @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  limit?: string;
+
+  @IsOptional()
   @IsArray()
   @IsEnum(InclusionType, { each: true })
   @Validate(IsNotDuplicate)
@@ -92,6 +101,8 @@ export class EventResponsesDTO {
   description: string;
   schedule: string;
   address: string;
+  menu?: string;
+  limit?: string;
   inclusive: $Enums.InclusionType[];
   creator: {
     id: string;
@@ -101,6 +112,5 @@ export class EventResponsesDTO {
   };
   listOfAttendees: {
     id: string;
-    pseudo: string;
   }[];
 }

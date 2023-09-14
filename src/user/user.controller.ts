@@ -3,7 +3,6 @@ import {
   UseGuards,
   Get,
   Delete,
-  Post,
   Put,
   Body,
   Param,
