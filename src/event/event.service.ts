@@ -6,6 +6,7 @@ import {
 import { InclusionType } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { JWTPayloadType } from 'src/guards/auth.guards';
+import { EventResponsesDTO } from './dtos/event.dtos';
 
 interface CreateEventParams {
   title: string;
@@ -23,6 +24,7 @@ interface UpdateEvent {
   schedule?: string;
   address?: string;
   menu?: string;
+  limit?: string;
   inclusive?: InclusionType[];
 }
 
@@ -148,7 +150,11 @@ export class EventService {
     }
   }
   //Update an event
-  async updateEventById(id: string, userId: string, data: UpdateEvent) {
+  async updateEventById(
+    id: string,
+    userId: string,
+    data: UpdateEvent,
+  ): Promise<EventResponsesDTO> {
     await this.doesUserHasAuthorization(id, userId);
     return this.prismaService.event.update({
       where: {

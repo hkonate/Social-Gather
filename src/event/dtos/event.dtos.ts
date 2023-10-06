@@ -82,7 +82,7 @@ export class UpdateEventDTO {
   @IsOptional()
   @IsString()
   @IsNotEmpty()
-  adress?: string;
+  address?: string;
 
   @IsOptional()
   @IsString()
@@ -101,8 +101,8 @@ export class EventResponsesDTO {
   description: string;
   schedule: string;
   address: string;
-  menu?: string;
-  limit?: string;
+  menu: string;
+  limit: string;
   inclusive: $Enums.InclusionType[];
   creator: {
     id: string;
