@@ -9,6 +9,7 @@ import { Server, Socket } from 'socket.io';
 import { MessagesService } from './messages.service';
 import { JoinRoomDto } from './dtos/join-room.dto';
 import { CreateMessageDto } from './dtos/create-message.dto';
+import { ParseUUIDPipe } from '@nestjs/common';
 
 @WebSocketGateway({
   cors: {
@@ -23,10 +24,10 @@ export class MessagesGateway {
 
   @SubscribeMessage('joinRoom')
   async joinRoom(
-    @MessageBody() data: JoinRoomDto,
+    @MessageBody() newUserInfo: JoinRoomDto,
     @ConnectedSocket() client: Socket,
   ) {
-    return this.messagesService.joinRoom(data, client);
+    return this.messagesService.joinRoom(newUserInfo, client);
   }
 
   @SubscribeMessage('createMessage')
@@ -38,8 +39,8 @@ export class MessagesGateway {
   }
 
   @SubscribeMessage('findAllMessages')
-  findAll() {
-    return this.messagesService.findAll();
+  findAll(@MessageBody('eventId', ParseUUIDPipe) eventId: string) {
+    return this.messagesService.findAll(eventId);
   }
 
   @SubscribeMessage('typing')

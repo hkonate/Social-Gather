@@ -8,6 +8,7 @@ import { JoinRoomDto } from './dtos/join-room.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Socket } from 'socket.io';
 import { Message } from './entities/message.entity';
+import { log } from 'console';
 
 @Injectable()
 export class MessagesService {
@@ -57,8 +58,6 @@ export class MessagesService {
     };
   }
   async create({ message, eventId, userId }: Message, client: Socket) {
-    console.log(eventId, message);
-
     await this.prismaService.message.create({
       data: {
         conversation: message,
@@ -72,8 +71,26 @@ export class MessagesService {
     return { room: eventId, message };
   }
 
-  findAll() {
-    return `This action returns all messages`;
+  async findAll(eventId: string) {
+    const messages = await this.prismaService.message.findMany({
+      where: {
+        eventId,
+      },
+      select: {
+        conversation: true,
+        author: {
+          select: {
+            pseudo: true,
+          },
+        },
+        eventId: true,
+        createdAt: true,
+      },
+    });
+
+    console.log(messages);
+
+    return { room: eventId, messages };
   }
 
   typing() {
