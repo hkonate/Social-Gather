@@ -4,7 +4,6 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { JoinRoomDto } from './dtos/join-room.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Socket } from 'socket.io';
 import { Message } from './entities/message.entity';
@@ -12,7 +11,7 @@ import { Message } from './entities/message.entity';
 @Injectable()
 export class MessagesService {
   constructor(private readonly prismaService: PrismaService) {}
-  async joinRoom({ userId, eventId }: JoinRoomDto, client: Socket) {
+  async joinRoom(userId: string, eventId: string, client: Socket) {
     const event = await this.prismaService.event.findUnique({
       where: {
         id: eventId,
@@ -45,8 +44,7 @@ export class MessagesService {
         throw new NotAcceptableException();
       }
     }
-    const room = client.join(eventId);
-    console.log(room);
+    client.join(eventId);
     client.broadcast
       .to(eventId)
       .emit('newAttendee', { message: `${user.pseudo} a rejoint le chat` });
@@ -56,7 +54,7 @@ export class MessagesService {
       attendees: event.listOfAttendees,
     };
   }
-  async create({ message, eventId, userId }: Message, client: Socket) {
+  async create(userId: string, { message, eventId }: Message, client: Socket) {
     await this.prismaService.message.create({
       data: {
         conversation: message,

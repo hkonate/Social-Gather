@@ -83,18 +83,9 @@ export class ProfileService {
     userId: string,
     data: UpdateProfileParam,
   ): Promise<ProfileServiceResponses> {
-    const user = await this.prismaService.user.findUnique({
-      where: {
-        id: userId,
-      },
-      select,
-    });
-    if (!user) {
-      throw new NotFoundException();
-    }
     const profile = await this.doesProfileExists(id);
 
-    if (profile.user.id !== user.id) {
+    if (profile.user.id !== userId) {
       throw new UnauthorizedException();
     }
     return this.prismaService.profile.update({

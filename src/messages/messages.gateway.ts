@@ -7,11 +7,11 @@ import {
 import { WebSocketServer } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { MessagesService } from './messages.service';
-import { JoinRoomDto } from './dtos/join-room.dto';
 import { CreateMessageDto } from './dtos/create-message.dto';
 import { ParseUUIDPipe, ParseBoolPipe, UseGuards } from '@nestjs/common';
 import { SocketGuard } from 'src/guards/authSocket.guards';
-
+import { User } from 'src/user/decorators/auth.decorators';
+import { JWTPayloadType } from 'src/guards/auth.guards';
 @WebSocketGateway({
   cors: {
     origin: '*',
@@ -25,18 +25,20 @@ export class MessagesGateway {
 
   @SubscribeMessage('joinRoom')
   async joinRoom(
-    @MessageBody() newUserInfo: JoinRoomDto,
+    @MessageBody('eventId', ParseUUIDPipe) eventId: string,
+    @User() userPayload: JWTPayloadType,
     @ConnectedSocket() client: Socket,
   ) {
-    return this.messagesService.joinRoom(newUserInfo, client);
+    return this.messagesService.joinRoom(userPayload.id, eventId, client);
   }
 
   @SubscribeMessage('createMessage')
   create(
     @MessageBody() createMessage: CreateMessageDto,
+    @User() userPayload: JWTPayloadType,
     @ConnectedSocket() client: Socket,
   ) {
-    return this.messagesService.create(createMessage, client);
+    return this.messagesService.create(userPayload.id, createMessage, client);
   }
 
   @SubscribeMessage('findAllMessages')
@@ -46,11 +48,16 @@ export class MessagesGateway {
 
   @SubscribeMessage('typing')
   typing(
-    @MessageBody('userId', ParseUUIDPipe) userId: string,
+    @User() userPayload: JWTPayloadType,
     @MessageBody('eventId', ParseUUIDPipe) eventId: string,
     @MessageBody('isTyping', ParseBoolPipe) isTyping: boolean,
     @ConnectedSocket() client: Socket,
   ) {
-    return this.messagesService.typing(userId, eventId, isTyping, client);
+    return this.messagesService.typing(
+      userPayload.id,
+      eventId,
+      isTyping,
+      client,
+    );
   }
 }
