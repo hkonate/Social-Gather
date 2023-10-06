@@ -9,15 +9,16 @@ import { Server, Socket } from 'socket.io';
 import { MessagesService } from './messages.service';
 import { JoinRoomDto } from './dtos/join-room.dto';
 import { CreateMessageDto } from './dtos/create-message.dto';
-import { ParseUUIDPipe, ParseBoolPipe } from '@nestjs/common';
+import { ParseUUIDPipe, ParseBoolPipe, UseGuards } from '@nestjs/common';
+import { SocketGuard } from 'src/guards/authSocket.guards';
 
 @WebSocketGateway({
   cors: {
     origin: '*',
   },
 })
+@UseGuards(SocketGuard)
 export class MessagesGateway {
-  //todo Handle Auth and Guard
   @WebSocketServer()
   server: Server;
   constructor(private readonly messagesService: MessagesService) {}

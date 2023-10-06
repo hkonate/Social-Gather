@@ -8,7 +8,6 @@ import { JoinRoomDto } from './dtos/join-room.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Socket } from 'socket.io';
 import { Message } from './entities/message.entity';
-import { log } from 'console';
 
 @Injectable()
 export class MessagesService {
