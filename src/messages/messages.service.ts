@@ -7,6 +7,7 @@ import {
 import { JoinRoomDto } from './dtos/join-room.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Socket } from 'socket.io';
+import { Message } from './entities/message.entity';
 
 @Injectable()
 export class MessagesService {
@@ -55,8 +56,20 @@ export class MessagesService {
       attendees: event.listOfAttendees,
     };
   }
-  create({ message, eventId }, client) {
-    return 'This action adds a new message';
+  async create({ message, eventId, userId }: Message, client: Socket) {
+    console.log(eventId, message);
+
+    await this.prismaService.message.create({
+      data: {
+        conversation: message,
+        authorId: userId,
+        eventId,
+      },
+    });
+
+    client.to(eventId).emit('sendMessage', { message });
+
+    return { room: eventId, message };
   }
 
   findAll() {

@@ -8,5 +8,10 @@ export class CreateMessageDto {
 
   @IsNotEmpty()
   @IsString()
+  @IsUUID()
+  userId: string;
+
+  @IsNotEmpty()
+  @IsString()
   message: string;
 }

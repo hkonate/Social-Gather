@@ -16,6 +16,7 @@ import { CreateMessageDto } from './dtos/create-message.dto';
   },
 })
 export class MessagesGateway {
+  //todo Handle Auth and Guard
   @WebSocketServer()
   server: Server;
   constructor(private readonly messagesService: MessagesService) {}

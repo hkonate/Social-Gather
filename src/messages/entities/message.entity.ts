@@ -1,3 +1,3 @@
-import { select } from 'src/user/user.service';
+import { CreateMessageDto } from '../dtos/create-message.dto';
 
-export class Message {}
+export class Message extends CreateMessageDto {}
