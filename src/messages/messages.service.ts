@@ -87,13 +87,30 @@ export class MessagesService {
         createdAt: true,
       },
     });
-
-    console.log(messages);
-
     return { room: eventId, messages };
   }
 
-  typing() {
-    return `This action returns message when user typing`;
+  async typing(
+    eventId: string,
+    userId: string,
+    isTyping: boolean,
+    client: Socket,
+  ) {
+    try {
+      const user = await this.prismaService.user.findUnique({
+        where: {
+          id: userId,
+        },
+        select: {
+          pseudo: true,
+        },
+      });
+      client.broadcast.to(eventId).emit('typing', {
+        userName: user.pseudo,
+        isTyping,
+      });
+    } catch (error) {
+      throw new UnauthorizedException();
+    }
   }
 }

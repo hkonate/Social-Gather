@@ -9,7 +9,7 @@ import { Server, Socket } from 'socket.io';
 import { MessagesService } from './messages.service';
 import { JoinRoomDto } from './dtos/join-room.dto';
 import { CreateMessageDto } from './dtos/create-message.dto';
-import { ParseUUIDPipe } from '@nestjs/common';
+import { ParseUUIDPipe, ParseBoolPipe } from '@nestjs/common';
 
 @WebSocketGateway({
   cors: {
@@ -44,5 +44,12 @@ export class MessagesGateway {
   }
 
   @SubscribeMessage('typing')
-  typing() {}
+  typing(
+    @MessageBody('userId', ParseUUIDPipe) userId: string,
+    @MessageBody('eventId', ParseUUIDPipe) eventId: string,
+    @MessageBody('isTyping', ParseBoolPipe) isTyping: boolean,
+    @ConnectedSocket() client: Socket,
+  ) {
+    return this.messagesService.typing(userId, eventId, isTyping, client);
+  }
 }
