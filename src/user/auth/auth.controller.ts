@@ -2,7 +2,7 @@ import { Body, Controller, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SigninDTO, SignupDTO } from '../dtos/auth.dtos';
 
-@Controller('auth')
+@Controller('/auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
