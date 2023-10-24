@@ -7,9 +7,10 @@ import { EventModule } from './event/event.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { AuthInterceptor } from './user/interceptors/auth.interceptors';
 import { MessagesModule } from './messages/messages.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
-  imports: [PrismaModule, UserModule, EventModule, MessagesModule],
+  imports: [PrismaModule, UserModule, EventModule, MessagesModule, AuthModule],
   controllers: [AppController],
   providers: [
     AppService,
