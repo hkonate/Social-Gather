@@ -70,8 +70,9 @@ export class AuthService {
       throw new HttpException('invalid credential', 400);
     }
     const isCorrect = await bcrypt.compare(password, user.password);
-    if (isCorrect) return this.generateJWT(user.pseudo, user.id);
-    else {
+    if (isCorrect) {
+      return this.generateJWT(user.pseudo, user.id);
+    } else {
       throw new HttpException('invalid credential', 400);
     }
   }
