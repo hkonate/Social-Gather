@@ -9,17 +9,20 @@ import { ProfileResponsesDTO } from '../dtos/profile.dtos';
 interface CreateProfileParam {
   bio?: string;
   picture?: string;
+  hobbies?: string;
 }
 
 interface UpdateProfileParam {
   bio?: string;
   picture?: string;
+  hobbies?: string;
 }
 
 interface ProfileServiceResponses {
   id: string;
   bio: string;
   picture: string;
+  hobbies: string;
   user: {
     id: string;
     pseudo: string;
@@ -32,6 +35,7 @@ const profileSelect = {
   id: true,
   bio: true,
   picture: true,
+  hobbies: true,
   user: {
     select: {
       id: true,
@@ -47,7 +51,7 @@ export class ProfileService {
   constructor(private readonly prismaService: PrismaService) {}
   async createProfile(
     userId: string,
-    { bio, picture }: CreateProfileParam,
+    { bio, picture, hobbies }: CreateProfileParam,
   ): Promise<ProfileResponsesDTO> {
     const user = await this.prismaService.user.findUnique({
       where: {
@@ -62,6 +66,7 @@ export class ProfileService {
       data: {
         bio,
         picture,
+        hobbies,
         user: {
           connect: {
             id: userId,

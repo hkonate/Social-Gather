@@ -19,12 +19,18 @@ export class UpdateProfileDTO {
   @IsString()
   @IsNotEmpty()
   picture: string;
+
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  hobbies: string;
 }
 
 export class ProfileResponsesDTO {
   id: string;
   bio: string;
   picture: string;
+  hobbies: string;
   user: {
     id: string;
     pseudo: string;
