@@ -2,6 +2,7 @@ import { Injectable, ConflictException, HttpException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import * as bcrypt from 'bcryptjs';
 import * as jwt from 'jsonwebtoken';
+import { log } from 'console';
 interface SignupParams {
   firstname: string;
   lastname: string;
@@ -56,11 +57,19 @@ export class AuthService {
         email,
         password: hashedPassword,
       },
+      select: {
+        id: true,
+        firstname: true,
+        lastname: true,
+        pseudo: true,
+        email: true,
+      },
     });
-    return this.generateJWT(user.pseudo, user.id);
+
+    return user;
   }
 
-  async signin({ email, password }: SigninParams) {
+  async signin({ email, password }: SigninParams): Promise<string | null> {
     const user = await this.prismaService.user.findUnique({
       where: {
         email,
@@ -71,7 +80,16 @@ export class AuthService {
     }
     const isCorrect = await bcrypt.compare(password, user.password);
     if (isCorrect) {
-      return this.generateJWT(user.pseudo, user.id);
+      const token = this.generateJWT(user.pseudo, user.id);
+      await this.prismaService.user.update({
+        where: {
+          id: user.id,
+        },
+        data: {
+          authTokens: [...user.authTokens, token],
+        },
+      });
+      return token;
     } else {
       throw new HttpException('invalid credential', 400);
     }
@@ -88,8 +106,22 @@ export class AuthService {
       where: {
         id: userId,
       },
-      data: {},
+      data: {
+        authTokens: user.authTokens
+          .filter((authToken) => authToken !== token)
+          .map((tokenFiltered) => tokenFiltered),
+      },
+      select: {
+        id: true,
+        firstname: true,
+        lastname: true,
+        pseudo: true,
+        email: true,
+        authTokens: true,
+      },
     });
+    console.log(deleteToken);
+    return deleteToken;
   }
 
   private generateJWT(name: string, id: string) {
