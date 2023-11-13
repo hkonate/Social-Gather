@@ -7,8 +7,8 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { select } from 'src/user/user.service';
 import { ProfileResponsesDTO } from '../dtos/profile.dtos';
 interface CreateProfileParam {
-  bio: string;
-  picture: string;
+  bio?: string;
+  picture?: string;
 }
 
 interface UpdateProfileParam {

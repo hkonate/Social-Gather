@@ -71,6 +71,9 @@ export class AuthService {
     }
     const isCorrect = await bcrypt.compare(password, user.password);
     if (isCorrect) return this.generateJWT(user.pseudo, user.id);
+    else {
+      throw new HttpException('invalid credential', 400);
+    }
   }
 
   private generateJWT(name: string, id: string) {
