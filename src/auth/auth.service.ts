@@ -77,6 +77,8 @@ export class AuthService {
     }
   }
 
+  async deleteToken(userId: string, userToken: string) {}
+
   private generateJWT(name: string, id: string) {
     return jwt.sign(
       {
