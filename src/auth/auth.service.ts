@@ -77,7 +77,20 @@ export class AuthService {
     }
   }
 
-  async deleteToken(userId: string, userToken: string) {}
+  async deleteToken(userId: string, userBearerToken: string) {
+    const token = userBearerToken.split(' ')[1];
+    const user = await this.prismaService.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+    const deleteToken = await this.prismaService.user.update({
+      where: {
+        id: userId,
+      },
+      data: {},
+    });
+  }
 
   private generateJWT(name: string, id: string) {
     return jwt.sign(

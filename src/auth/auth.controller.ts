@@ -19,9 +19,10 @@ export class AuthController {
 
   @Delete()
   deleteToken(
-    @User() userPayload: JWTPayloadType 
-    @Headers() {authorization}) {
-      console.log(authorization);
-      return this.authService.deleteToken(userPayload.id, authorization)
+    @User() userPayload: JWTPayloadType,
+    @Headers() { authorization }: { authorization: string },
+  ) {
+    console.log(authorization);
+    return this.authService.deleteToken(userPayload.id, authorization);
   }
 }
