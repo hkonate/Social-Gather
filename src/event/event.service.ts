@@ -15,7 +15,7 @@ interface CreateEventParams {
   address: string;
   menu?: string;
   limit?: string;
-  inclusive: InclusionType[];
+  inclusive?: InclusionType[];
 }
 
 interface UpdateEvent {
@@ -89,7 +89,7 @@ export class EventService {
         title,
         description,
         schedule,
-        inclusive,
+        ...(inclusive && { inclusive }),
         ...(menu && { menu }),
         ...(limit && { limit }),
         address,
