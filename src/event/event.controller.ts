@@ -19,6 +19,7 @@ import { EventService } from './event.service';
 import { AuthGuard, JWTPayloadType } from 'src/guards/auth.guards';
 import { User } from 'src/user/decorators/auth.decorators';
 
+//ds
 @Controller('event')
 @UseGuards(AuthGuard)
 export class EventController {
