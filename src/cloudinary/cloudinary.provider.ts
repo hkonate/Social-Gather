@@ -1,5 +1,7 @@
+// cloudinary.provider.ts
+
 import { v2 as cloudinary } from 'cloudinary';
-//cloudinary
+
 export const CloudinaryProvider = {
   provide: 'CLOUDINARY',
   useFactory: () => {

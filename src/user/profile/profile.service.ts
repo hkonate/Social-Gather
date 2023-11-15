@@ -4,8 +4,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { select } from 'src/user/user.service';
-import { ProfileResponsesDTO } from '../dtos/profile.dtos';
+
 interface CreateProfileParam {
   bio?: string;
   picture?: string;
@@ -62,6 +61,7 @@ export class ProfileService {
     id: string,
     userId: string,
     { bio, picture, hobbies }: UpdateProfileParam,
+    file: Express.Multer.File,
   ): Promise<ProfileServiceResponses> {
     const profile = await this.doesProfileExists(id);
     if (profile) {
