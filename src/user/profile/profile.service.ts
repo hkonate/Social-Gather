@@ -49,59 +49,55 @@ const profileSelect = {
 @Injectable()
 export class ProfileService {
   constructor(private readonly prismaService: PrismaService) {}
-  async createProfile(
-    userId: string,
-    { bio, picture, hobbies }: CreateProfileParam,
-  ): Promise<ProfileResponsesDTO> {
-    const user = await this.prismaService.user.findUnique({
-      where: {
-        id: userId,
-      },
-      select,
-    });
-    if (!user || user.profile !== null) {
-      throw new UnauthorizedException();
-    }
-    return this.prismaService.profile.create({
-      data: {
-        bio,
-        picture,
-        hobbies,
-        user: {
-          connect: {
-            id: userId,
-          },
-        },
-      },
-      select: {
-        ...profileSelect,
-      },
-    });
-  }
 
-  async getProfile(id: string): Promise<ProfileServiceResponses> {
-    return this.doesProfileExists(id);
+  getProfile(id: string): Promise<ProfileServiceResponses> {
+    const profile = this.doesProfileExists(id);
+    if (!profile) {
+      throw new NotFoundException();
+    }
+    return profile;
   }
 
   async updateProfile(
     id: string,
     userId: string,
-    data: UpdateProfileParam,
+    { bio, picture, hobbies }: UpdateProfileParam,
   ): Promise<ProfileServiceResponses> {
     const profile = await this.doesProfileExists(id);
-
-    if (profile.user.id !== userId) {
-      throw new UnauthorizedException();
+    if (profile) {
+      if (profile.user.id !== userId) {
+        throw new UnauthorizedException();
+      }
+      return this.prismaService.profile.update({
+        where: {
+          userId,
+        },
+        data: {
+          bio,
+          picture,
+          hobbies,
+        },
+        select: {
+          ...profileSelect,
+        },
+      });
+    } else {
+      return this.prismaService.profile.create({
+        data: {
+          ...(bio && { bio }),
+          ...(picture && { picture }),
+          ...(hobbies && { hobbies }),
+          user: {
+            connect: {
+              id: userId,
+            },
+          },
+        },
+        select: {
+          ...profileSelect,
+        },
+      });
     }
-    return this.prismaService.profile.update({
-      where: {
-        id,
-      },
-      data,
-      select: {
-        ...profileSelect,
-      },
-    });
   }
 
   private async doesProfileExists(
@@ -116,7 +112,7 @@ export class ProfileService {
       },
     });
     if (!profile) {
-      throw new NotFoundException();
+      return null;
     }
     return profile;
   }

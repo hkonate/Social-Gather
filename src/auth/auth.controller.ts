@@ -20,7 +20,7 @@ export class AuthController {
   }
 
   @Post('/signin')
-  signin(@Body() body: SigninDTO): Promise<string> {
+  signin(@Body() body: SigninDTO) {
     return this.authService.signin(body);
   }
 

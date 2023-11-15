@@ -69,10 +69,20 @@ export class AuthService {
     return user;
   }
 
-  async signin({ email, password }: SigninParams): Promise<string | null> {
+  async signin({ email, password }: SigninParams) {
     const user = await this.prismaService.user.findUnique({
       where: {
         email,
+      },
+      select: {
+        id: true,
+        firstname: true,
+        lastname: true,
+        pseudo: true,
+        phone: true,
+        email: true,
+        password: true,
+        authTokens: true,
       },
     });
     if (!user) {
@@ -89,7 +99,7 @@ export class AuthService {
           authTokens: [...user.authTokens, token],
         },
       });
-      return token;
+      return { token, userId: user.id };
     } else {
       throw new HttpException('invalid credential', 400);
     }

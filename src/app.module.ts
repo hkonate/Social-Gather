@@ -8,9 +8,10 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
 import { AuthInterceptor } from './user/interceptors/auth.interceptors';
 import { MessagesModule } from './messages/messages.module';
 import { AuthModule } from './auth/auth.module';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
 
 @Module({
-  imports: [PrismaModule, UserModule, EventModule, MessagesModule, AuthModule],
+  imports: [PrismaModule, UserModule, EventModule, MessagesModule, AuthModule, CloudinaryModule],
   controllers: [AppController],
   providers: [
     AppService,
