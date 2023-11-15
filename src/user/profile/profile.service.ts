@@ -2,18 +2,14 @@ import {
   Injectable,
   NotFoundException,
   UnauthorizedException,
+  UnprocessableEntityException,
+  UnsupportedMediaTypeException,
 } from '@nestjs/common';
+import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { PrismaService } from 'src/prisma/prisma.service';
-
-interface CreateProfileParam {
-  bio?: string;
-  picture?: string;
-  hobbies?: string;
-}
 
 interface UpdateProfileParam {
   bio?: string;
-  picture?: string;
   hobbies?: string;
 }
 
@@ -47,7 +43,10 @@ const profileSelect = {
 
 @Injectable()
 export class ProfileService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly cloudinaryService: CloudinaryService,
+  ) {}
 
   getProfile(id: string): Promise<ProfileServiceResponses> {
     const profile = this.doesProfileExists(id);
@@ -60,60 +59,79 @@ export class ProfileService {
   async updateProfile(
     id: string,
     userId: string,
-    { bio, picture, hobbies }: UpdateProfileParam,
+    { bio, hobbies }: UpdateProfileParam,
     file: Express.Multer.File,
   ): Promise<ProfileServiceResponses> {
-    const profile = await this.doesProfileExists(id);
-    if (profile) {
-      if (profile.user.id !== userId) {
-        throw new UnauthorizedException();
-      }
-      return this.prismaService.profile.update({
-        where: {
-          userId,
-        },
-        data: {
-          bio,
-          picture,
-          hobbies,
-        },
-        select: {
-          ...profileSelect,
-        },
+    let picture = null;
+    try {
+      const response = await this.cloudinaryService.uploadFile(file, userId);
+      picture = response.secure_url;
+    } catch (error) {
+      throw new UnsupportedMediaTypeException({
+        message: error.message,
+        statusCode: error.http_code,
       });
-    } else {
-      return this.prismaService.profile.create({
-        data: {
-          ...(bio && { bio }),
-          ...(picture && { picture }),
-          ...(hobbies && { hobbies }),
-          user: {
-            connect: {
-              id: userId,
+    }
+
+    try {
+      const profile = await this.doesProfileExists(id);
+      if (profile) {
+        if (profile.user.id !== userId) {
+          throw new UnauthorizedException();
+        }
+        return this.prismaService.profile.update({
+          where: {
+            userId,
+          },
+          data: {
+            bio,
+            picture,
+            hobbies,
+          },
+          select: {
+            ...profileSelect,
+          },
+        });
+      } else {
+        return this.prismaService.profile.create({
+          data: {
+            ...(bio && { bio }),
+            ...(picture && { picture }),
+            ...(hobbies && { hobbies }),
+            user: {
+              connect: {
+                id: userId,
+              },
             },
           },
-        },
-        select: {
-          ...profileSelect,
-        },
-      });
+          select: {
+            ...profileSelect,
+          },
+        });
+      }
+    } catch (error) {
+      throw new UnprocessableEntityException(error);
     }
   }
 
   private async doesProfileExists(
     profileId: string,
   ): Promise<ProfileServiceResponses> {
-    const profile = await this.prismaService.profile.findUnique({
-      where: {
-        id: profileId,
-      },
-      select: {
-        ...profileSelect,
-      },
-    });
-    if (!profile) {
-      return null;
+    try {
+      const profile = await this.prismaService.profile.findUnique({
+        where: {
+          id: profileId,
+        },
+        select: {
+          ...profileSelect,
+        },
+      });
+      if (!profile) {
+        return null;
+      }
+      return profile;
+    } catch (error) {
+      throw new UnprocessableEntityException(error);
     }
-    return profile;
   }
 }

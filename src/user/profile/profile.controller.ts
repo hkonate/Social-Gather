@@ -3,7 +3,6 @@ import {
   UseGuards,
   Post,
   Body,
-  UnsupportedMediaTypeException,
   ParseUUIDPipe,
   Param,
   Get,
@@ -14,20 +13,15 @@ import {
 import { ProfileService } from './profile.service';
 import { User } from 'src/user/decorators/auth.decorators';
 import {
-  CreateProfileDTO,
   ProfileResponsesDTO,
   UpdateProfileDTO,
 } from 'src/user/dtos/profile.dtos';
 import { AuthGuard, JWTPayloadType } from 'src/guards/auth.guards';
-import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 @Controller('profile')
 @UseGuards(AuthGuard)
 export class ProfileController {
-  constructor(
-    private readonly profileService: ProfileService,
-    private readonly cloudinaryService: CloudinaryService,
-  ) {}
+  constructor(private readonly profileService: ProfileService) {}
 
   @Post()
   @Get('/:id')
@@ -39,27 +33,12 @@ export class ProfileController {
 
   @Put('/:id')
   @UseInterceptors(FileInterceptor('file'))
-  async updateProfile(
+  updateProfile(
     @UploadedFile() file: Express.Multer.File,
-    // @Param('id', ParseUUIDPipe) id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @User() userPayload: JWTPayloadType,
-    // @Body() body: UpdateProfileDTO,
-  ) {
-    //  ): Promise<ProfileResponsesDTO> {
-    try {
-      const toto = await this.cloudinaryService.uploadFile(
-        file,
-        userPayload.id,
-      );
-      console.log(toto);
-    } catch (error) {
-      throw new UnsupportedMediaTypeException({
-        message: error.message,
-        statusCode: error.http_code,
-      });
-    }
-
-    return 'toto';
-    // return this.profileService.updateProfile(id, userPayload.id, body, file);
+    @Body() body: UpdateProfileDTO,
+  ): Promise<ProfileResponsesDTO> {
+    return this.profileService.updateProfile(id, userPayload.id, body, file);
   }
 }
