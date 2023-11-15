@@ -22,13 +22,6 @@ import { AuthGuard, JWTPayloadType } from 'src/guards/auth.guards';
 export class ProfileController {
   constructor(private readonly profileService: ProfileService) {}
   @Post()
-  createProfile(
-    @User() userPayload: JWTPayloadType,
-    @Body() body: CreateProfileDTO,
-  ): Promise<ProfileResponsesDTO> {
-    return this.profileService.createProfile(userPayload.id, body);
-  }
-
   @Get('/:id')
   getProfile(
     @Param('id', ParseUUIDPipe) id: string,
