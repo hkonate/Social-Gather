@@ -37,7 +37,7 @@ export class UserController {
   }
 
   @Delete()
-  deleteUser(@User() userPayload: JWTPayloadType): Promise<void> {
+  deleteUser(@User() userPayload: JWTPayloadType) {
     return this.userService.deleteUser(userPayload.id);
   }
 }

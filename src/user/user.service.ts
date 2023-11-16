@@ -1,6 +1,11 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import * as jwt from 'jsonwebtoken';
+import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 interface UpdateUserParams {
   firstname?: string;
   lastname?: string;
@@ -24,58 +29,87 @@ export const select = {
 };
 @Injectable()
 export class UserService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly cloudinaryService: CloudinaryService,
+  ) {}
 
   async getUsers(userId: string) {
-    const users = await this.prismaService.user.findMany({
-      select,
-    });
-    if (!users) {
-      throw new NotFoundException();
+    try {
+      const users = await this.prismaService.user.findMany({
+        where: {
+          id: {
+            not: userId,
+          },
+        },
+        select,
+      });
+      if (!users) {
+        throw new NotFoundException();
+      }
+      return users;
+    } catch (error) {
+      throw new UnprocessableEntityException(error);
     }
-    return users.filter((user) => user.id !== userId);
   }
 
-  getUser(userId: string) {
-    return this.prismaService.user.findUnique({
-      where: { id: userId },
-      select,
-    });
+  async getUser(userId: string) {
+    try {
+      const user = await this.prismaService.user.findUnique({
+        where: { id: userId },
+        select,
+      });
+      return user;
+    } catch (error) {
+      throw new UnprocessableEntityException(error);
+    }
   }
 
   async updateUser(userId: string, data: UpdateUserParams) {
-    if (data.password) {
-      data.password = jwt.sign(data.password, process.env.JSON_WEB_KEY);
+    try {
+      if (data.password) {
+        data.password = jwt.sign(data.password, process.env.JSON_WEB_KEY);
+      }
+      const updatedUser = await this.prismaService.user.update({
+        where: {
+          id: userId,
+        },
+        data,
+        select,
+      });
+      return updatedUser;
+    } catch (error) {
+      throw new UnprocessableEntityException(error);
     }
-    return this.prismaService.user.update({
-      where: {
-        id: userId,
-      },
-      data,
-      select,
-    });
   }
 
   async deleteUser(userId: string) {
-    const res = await this.prismaService.user.delete({
-      where: {
-        id: userId,
-      },
-      select: {
-        profile: true,
-      },
-    });
-    if (res.profile)
-      await this.prismaService.profile.delete({
+    try {
+      const deletedProfile = await this.prismaService.profile.delete({
         where: {
           userId,
         },
       });
+      const path = `SocialGather${
+        deletedProfile.picture.split('SocialGather')[1].split('.')[0]
+      }`;
+      const deletedFolder = await this.cloudinaryService.deleteFolder(path);
+
+      const user = await this.prismaService.user.delete({
+        where: {
+          id: userId,
+        },
+        select: {
+          id: true,
+          firstname: true,
+          lastname: true,
+          pseudo: true,
+          email: true,
+        },
+      });
+      return { ...user, ...deletedProfile, ...deletedFolder };
+    } catch (error) {
+      throw new UnprocessableEntityException(error);
+    }
   }
 }
-
-// Peter eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoic3BpZGVybWFuIiwiaWQiOiJhYzY3ODI1ZS03NDk1LTRjNWUtYjg0MS1iODBkYThkYzMyMWMiLCJpYXQiOjE2OTM1NzgzNjYsImV4cCI6MTY5NzE3ODM2Nn0.7EB5eNVfuru9lUcWsCxqI1zCJ_Pt_fiDZrQ4n9KUqWU
-// John  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiam9obmRvZSIsImlkIjoiZmJjMzg4NzMtZTExNi00NzU3LWJjNzMtYzAwZTlkYTdkNjU4IiwiaWF0IjoxNjkzNTc4NDMxLCJleHAiOjE2OTcxNzg0MzF9.7uXladmqgOgzgzCFwAJ3leBEq-M7Bg2qqx57Xl-Flvk
-// lebron eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiTGVraW5nIiwiaWQiOiJkZmQ5ZDBhMi1hMGJhLTQ0ZmYtODQ4MS1hMjZjMDM1ZTFmOWMiLCJpYXQiOjE2OTM1Nzg1MjgsImV4cCI6MTY5NzE3ODUyOH0.aBcmAMASWSDansv3UTSUsCTmHzSrWqvRrno2tGbFq6g
-// mojojojo eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoibW9tbyIsImlkIjoiNTk3Mzk1YTMtMTVkMS00ZGNhLTg5NjMtYWIzMmUwNWVmMzcwIiwiaWF0IjoxNjkzNTc4NjEzLCJleHAiOjE2OTcxNzg2MTN9.GNZymjNYuSIn4rRHXlGhbcdVcCjvhUJPZKa9PqJpzaQ
-// test eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGVzdCIsImlkIjoiN2QzNGUzYzEtZjIxYi00Y2Q5LTg4MTgtY2M5M2VmZDQyZjZjIiwiaWF0IjoxNjk0NzAwNzgwLCJleHAiOjE2OTgzMDA3ODB9.DCu4lNfNXTTLuSi4SOR7kTIkc-5cUhTLLq_1rT2tHFg

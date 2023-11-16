@@ -18,16 +18,30 @@ export class CloudinaryService {
         },
       );
 
-      streamifier.createReadStream(file.fieldname).pipe(uploadStream);
+      streamifier.createReadStream(file.buffer).pipe(uploadStream);
     });
   }
 
-  async deleteFolder(path: string) {
+  async deleteFile(path: string): Promise<CloudinaryResponse> {
     try {
-      const deletedImages =
+      const deletedImage: CloudinaryResponse =
+        await cloudinary.uploader.destroy(path);
+      return deletedImage;
+    } catch (error) {
+      throw new ConflictException({
+        message: error.message,
+        statusCode: error.http_code,
+      });
+    }
+  }
+
+  async deleteFolder(path: string): Promise<CloudinaryResponse> {
+    try {
+      const deletedImages: CloudinaryResponse =
         await cloudinary.api.delete_resources_by_prefix(path);
-      const deletedFolder = await cloudinary.api.delete_folder(path);
-      return { deletedImages, deletedFolder };
+      const deletedFolder: CloudinaryResponse =
+        await cloudinary.api.delete_folder(path);
+      return { ...deletedImages, ...deletedFolder };
     } catch (error) {
       throw new ConflictException({
         message: error.message,
