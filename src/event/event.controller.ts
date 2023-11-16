@@ -9,6 +9,8 @@ import {
   Param,
   ParseBoolPipe,
   UseGuards,
+  UploadedFiles,
+  UseInterceptors,
 } from '@nestjs/common';
 import {
   CreateEventDTO,
@@ -18,6 +20,7 @@ import {
 import { EventService } from './event.service';
 import { AuthGuard, JWTPayloadType } from 'src/guards/auth.guards';
 import { User } from 'src/user/decorators/auth.decorators';
+import { FilesInterceptor } from '@nestjs/platform-express';
 
 //ds
 @Controller('event')
@@ -35,13 +38,14 @@ export class EventController {
   ): Promise<EventResponsesDTO> {
     return this.eventService.getEventById(id);
   }
-
   @Post()
+  @UseInterceptors(FilesInterceptor('files'))
   createEvent(
+    @UploadedFiles() files: Array<Express.Multer.File>,
     @Body() body: CreateEventDTO,
     @User() userPayload: JWTPayloadType,
   ): Promise<EventResponsesDTO> {
-    return this.eventService.createEvent(body, userPayload.id);
+    return this.eventService.createEvent(body, userPayload.id, files);
   }
 
   @Put('/:id')

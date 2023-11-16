@@ -41,7 +41,7 @@ model Event{
   title                     String @db.Char(50)
   description               String
   schedule                  String
-  menu                      String @default("")
+  images                    String[] @default([])
   address                   String
   limit                     String  @default("20")
   inclusive                 InclusionType[]

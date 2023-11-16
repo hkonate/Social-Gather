@@ -75,9 +75,9 @@ export class UpdateEventDTO {
   schedule?: string;
 
   @IsOptional()
+  @IsArray()
   @IsString()
-  @IsNotEmpty()
-  menu?: string;
+  images: string[];
 
   @IsOptional()
   @IsString()
@@ -101,7 +101,7 @@ export class EventResponsesDTO {
   description: string;
   schedule: string;
   address: string;
-  menu: string;
+  images: string[];
   limit: string;
   inclusive: $Enums.InclusionType[];
   creator: {

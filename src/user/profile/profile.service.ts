@@ -67,13 +67,15 @@ export class ProfileService {
   ): Promise<ProfileServiceResponses> {
     let picture = null;
     try {
-      const imageDetails = await this.cloudinaryService.uploadFile(
-        file,
-        userId,
-      );
-      console.log(imageDetails);
-
-      picture = imageDetails.secure_url;
+      if (file) {
+        const imageDetails = await this.cloudinaryService.uploadFile(
+          file,
+          userId,
+          'Avatar',
+        );
+        console.log(imageDetails);
+        picture = imageDetails.secure_url;
+      }
     } catch (error) {
       throw new UnsupportedMediaTypeException({
         message: error.message,
@@ -83,6 +85,7 @@ export class ProfileService {
 
     try {
       const profile = await this.doesProfileExists(profileId);
+
       if (profile) {
         if (profile.user.id !== userId) {
           throw new UnauthorizedException(
@@ -94,9 +97,9 @@ export class ProfileService {
             userId,
           },
           data: {
-            bio,
-            picture,
-            hobbies,
+            ...(bio && { bio }),
+            ...(picture && { picture }),
+            ...(hobbies && { hobbies }),
           },
           select: {
             ...profileSelect,
@@ -109,6 +112,7 @@ export class ProfileService {
             userId: userId,
           },
         });
+
         if (!existingProfile) {
           const createdProfile = await this.prismaService.profile.create({
             data: {
@@ -125,8 +129,6 @@ export class ProfileService {
               ...profileSelect,
             },
           });
-          console.log(createdProfile, 'createdProfile');
-
           return createdProfile;
         } else {
           throw new ForbiddenException({
@@ -135,7 +137,6 @@ export class ProfileService {
         }
       }
     } catch (error) {
-      console.log(error);
       throw new HttpException(error.message, error.status);
     }
   }

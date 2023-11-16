@@ -8,10 +8,11 @@ export class CloudinaryService {
   uploadFile(
     file: Express.Multer.File,
     userId: string,
+    path: string
   ): Promise<CloudinaryResponse> {
     return new Promise<CloudinaryResponse>((resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(
-        { folder: `SocialGather/${userId}/Avatar` },
+        { folder: `SocialGather/${userId}/${path}` },
         (error, result) => {
           if (error) return reject(error);
           resolve(result);
