@@ -2,6 +2,8 @@ import {
   Injectable,
   NotFoundException,
   UnauthorizedException,
+  HttpException,
+  ForbiddenException,
 } from '@nestjs/common';
 import { InclusionType } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -62,14 +64,24 @@ const select = {
 export class EventService {
   constructor(private readonly prismaService: PrismaService) {}
   //Get all events
-  getEvents() {
-    return this.prismaService.event.findMany({
-      select,
-    });
+  async getEvents() {
+    try {
+      const events = await this.prismaService.event.findMany({
+        select,
+      });
+      return events;
+    } catch (error) {
+      throw new HttpException(error.message, error.status);
+    }
   }
   //Get one event
-  getEventById(id: string) {
-    return this.doesEventExists(id);
+  async getEventById(id: string) {
+    try {
+      const event = await this.doesEventExists(id);
+      return event;
+    } catch (error) {
+      throw new HttpException(error.message, error.status);
+    }
   }
   //Create an event
   async createEvent(
@@ -84,69 +96,74 @@ export class EventService {
     }: CreateEventParams,
     userId: string,
   ) {
-    return this.prismaService.event.create({
-      data: {
-        title,
-        description,
-        schedule,
-        ...(inclusive && { inclusive }),
-        ...(menu && { menu }),
-        ...(limit && { limit }),
-        address,
-        listOfAttendees: {
-          connect: {
-            id: userId,
-          },
-        },
-        creatorId: userId,
-        chat: {
-          create: {
-            conversation:
-              'Nous valorisons la bienveillance et le respect mutuel dans cette chat chat. Veuillez contribuer à créer un environnement positif pour toutes et tous les participant(e)s. 🌟',
-            authorId: userId,
-          },
-        },
-      },
-      select,
-    });
-  }
-
-  //Join/Unjoin an event
-  async attendEvent(id: string, attend: boolean, userPayload: JWTPayloadType) {
-    //todo add checker that block event's attend at a time
-    await this.doesEventExists(id);
-    const { limit, listOfAttendees, creator } = await this.getEventById(id);
-    if (creator.id === userPayload.id) throw new UnauthorizedException();
-    if (attend) {
-      if (listOfAttendees.length < parseInt(limit))
-        return this.prismaService.event.update({
-          where: {
-            id,
-          },
+    try {
+      const currentDate = new Date().getTime();
+      const tenMinutesAgo = currentDate * 10 * 60 * 100;
+      const eventDate = new Date(schedule).getTime();
+      if (tenMinutesAgo - eventDate < 0) {
+        const createdEvent = await this.prismaService.event.create({
           data: {
+            title,
+            description,
+            schedule,
+            ...(inclusive && { inclusive }),
+            ...(menu && { menu }),
+            ...(limit && { limit }),
+            address,
             listOfAttendees: {
               connect: {
-                id: userPayload.id,
+                id: userId,
+              },
+            },
+            creatorId: userId,
+            chat: {
+              create: {
+                conversation:
+                  'Nous valorisons la bienveillance et le respect mutuel dans cette chat chat. Veuillez contribuer à créer un environnement positif pour toutes et tous les participant(e)s. 🌟',
+                authorId: userId,
               },
             },
           },
           select,
         });
-      throw new UnauthorizedException();
-    } else {
-      return this.prismaService.event.update({
+        return createdEvent;
+      } else {
+        throw new ForbiddenException(
+          'You are not allow to create an event with a short schedule',
+        );
+      }
+    } catch (error) {
+      throw new HttpException(error.message, error.status);
+    }
+  }
+
+  //Join/Unjoin an event
+  async attendEvent(id: string, attend: boolean, userPayload: JWTPayloadType) {
+    //todo add checker that block event's attend at a time
+    try {
+      await this.doesEventExists(id);
+      const { limit, listOfAttendees, creator, schedule } =
+        await this.getEventById(id);
+      if (creator.id === userPayload.id)
+        throw new UnauthorizedException(
+          'You are not allowed leave the event   ',
+        );
+      if (listOfAttendees.length >= parseInt(limit) && attend)
+        throw new UnauthorizedException();
+      const updatedEvent = await this.prismaService.event.update({
         where: {
           id,
         },
         data: {
-          listOfAttendees: {
-            disconnect: {
-              id: userPayload.id,
-            },
-          },
+          listOfAttendees: attend
+            ? { connect: { id: userPayload.id } }
+            : { disconnect: { id: userPayload.id } },
         },
         select,
       });
+      return updatedEvent;
+    } catch (error) {
+      throw new HttpException(error.message, error.status);
     }
   }
   //Update an event
