@@ -11,7 +11,7 @@ describe('EventService', () => {
 
     service = module.get<EventService>(EventService);
   });
-
+  
   it('should be defined', () => {
     expect(service).toBeDefined();
   });

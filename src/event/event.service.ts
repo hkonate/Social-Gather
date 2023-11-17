@@ -86,6 +86,7 @@ export class EventService {
       throw new HttpException(error.message, error.status);
     }
   }
+
   //Create an event
   async createEvent(
     {
@@ -183,6 +184,7 @@ export class EventService {
       throw new HttpException(error.message, error.status);
     }
   }
+
   //Update an event
   async updateEventById(
     id: string,
@@ -198,6 +200,7 @@ export class EventService {
       select,
     });
   }
+
   //Delete an event
   async deleteEventById(id: string, userId: string) {
     await this.doesUserHasAuthorization(id, userId);
@@ -213,6 +216,7 @@ export class EventService {
       select,
     });
   }
+
   private async doesEventExists(eventId: string) {
     const event = await this.prismaService.event.findUnique({
       where: { id: eventId },
@@ -232,9 +236,9 @@ export class EventService {
   }
 
   private eventTimeRestriction(time: string) {
-    const tenMinutesAgo = new Date().getTime() * 10 * 60 * 100;
+    const tenMinutesAgo = new Date().getTime() * 10 * 60 * 1000;
     const eventDate = new Date(time).getTime();
-    if (tenMinutesAgo > eventDate) {
+    if (tenMinutesAgo < eventDate) {
       throw new UnauthorizedException(
         'You are allow to create or join/unjoin an event whith a short schedule',
       );
