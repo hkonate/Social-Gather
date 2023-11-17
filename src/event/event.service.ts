@@ -240,7 +240,7 @@ export class EventService {
     const eventDate = new Date(time).getTime();
     if (tenMinutesAgo > eventDate) {
       throw new UnauthorizedException(
-        'You are allow to create or join/unjoin an event whith a short schedule',
+        'You are not allow to create or join/unjoin an event whith a short schedule',
       );
     }
   }
