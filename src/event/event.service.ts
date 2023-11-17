@@ -238,7 +238,7 @@ export class EventService {
   private eventTimeRestriction(time: string) {
     const tenMinutesAgo = new Date().getTime() * 10 * 60 * 1000;
     const eventDate = new Date(time).getTime();
-    if (tenMinutesAgo < eventDate) {
+    if (tenMinutesAgo > eventDate) {
       throw new UnauthorizedException(
         'You are allow to create or join/unjoin an event whith a short schedule',
       );
