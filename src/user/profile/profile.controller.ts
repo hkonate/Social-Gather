@@ -18,6 +18,8 @@ import {
 } from 'src/user/dtos/profile.dtos';
 import { AuthGuard, JWTPayloadType } from 'src/guards/auth.guards';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiTags } from '@nestjs/swagger';
+@ApiTags('Profile')
 @Controller('profile')
 @UseGuards(AuthGuard)
 export class ProfileController {

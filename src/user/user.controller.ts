@@ -12,7 +12,8 @@ import { AuthGuard, JWTPayloadType } from 'src/guards/auth.guards';
 import { UserService } from './user.service';
 import { User } from './decorators/auth.decorators';
 import { UpdateUserDTO, UserResponsesDTO } from './dtos/user.dtos';
-
+import { ApiTags } from '@nestjs/swagger';
+@ApiTags('User')
 @Controller('user')
 @UseGuards(AuthGuard)
 export class UserController {

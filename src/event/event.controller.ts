@@ -21,9 +21,9 @@ import { EventService } from './event.service';
 import { AuthGuard, JWTPayloadType } from 'src/guards/auth.guards';
 import { User } from 'src/user/decorators/auth.decorators';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import { CloudinaryResponse } from 'src/cloudinary/cloudinary-response';
-
+import { ApiTags } from '@nestjs/swagger';
 //ds
+@ApiTags('Event')
 @Controller('event')
 @UseGuards(AuthGuard)
 export class EventController {

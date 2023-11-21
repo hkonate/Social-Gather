@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { $Enums, InclusionType } from '@prisma/client';
 import { Type } from 'class-transformer';
 import {
@@ -37,27 +38,33 @@ class File {
   buffer: Buffer;
 }
 export class CreateEventDTO {
+  @ApiProperty()
   @IsString()
   @IsNotEmpty()
   title: string;
 
+  @ApiProperty()
   @IsString()
   @IsNotEmpty()
   description: string;
 
+  @ApiProperty()
   @IsString()
   @IsNotEmpty()
   schedule: string;
 
+  @ApiProperty()
   @IsString()
   @IsNotEmpty()
   address: string;
 
+  @ApiProperty({ required: false })
   @IsOptional()
   @IsString()
   @IsNotEmpty()
   limit?: string;
 
+  @ApiProperty({ required: false })
   @IsOptional()
   @IsArray()
   @ArrayMinSize(1)
@@ -65,6 +72,7 @@ export class CreateEventDTO {
   @Type(() => File)
   images: Array<Express.Multer.File>;
 
+  @ApiProperty({ required: false })
   @IsOptional()
   @IsArray()
   @IsEnum(InclusionType, { each: true })
@@ -73,21 +81,25 @@ export class CreateEventDTO {
 }
 
 export class UpdateEventDTO {
+  @ApiProperty({ required: false })
   @IsOptional()
   @IsString()
   @IsNotEmpty()
   title?: string;
 
+  @ApiProperty({ required: false })
   @IsOptional()
   @IsString()
   @IsNotEmpty()
   description?: string;
 
+  @ApiProperty({ required: false })
   @IsOptional()
   @IsString()
   @IsNotEmpty()
   schedule?: string;
 
+  @ApiProperty({ required: false })
   @IsOptional()
   @IsArray()
   @ArrayMinSize(1)
@@ -95,16 +107,19 @@ export class UpdateEventDTO {
   @Type(() => File)
   images: Array<Express.Multer.File>;
 
+  @ApiProperty({ required: false })
   @IsOptional()
   @IsString()
   @IsNotEmpty()
   address?: string;
 
+  @ApiProperty({ required: false })
   @IsOptional()
   @IsString()
   @IsNotEmpty()
   limit?: string;
 
+  @ApiProperty({ required: false })
   @IsOptional()
   @IsArray()
   @IsEnum(InclusionType, { each: true })
