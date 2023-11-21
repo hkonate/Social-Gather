@@ -161,7 +161,7 @@ export class EventService {
 
       if (creator.id === userPayload.id)
         throw new UnauthorizedException(
-          'You are not allowed leave the event   ',
+          'The creator of the event is not allow to join or unjoin the event',
         );
       if (listOfAttendees.length >= parseInt(limit) && attend) {
         throw new UnauthorizedException(

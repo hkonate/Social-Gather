@@ -5,7 +5,6 @@ import {
   UnprocessableEntityException,
   UnsupportedMediaTypeException,
   ForbiddenException,
-  HttpStatus,
   HttpException,
 } from '@nestjs/common';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
@@ -65,16 +64,14 @@ export class ProfileService {
     { bio, hobbies }: UpdateProfileParam,
     file: Express.Multer.File,
   ): Promise<ProfileServiceResponses> {
-    let picture = null;
+    let imageDetails = null;
     try {
       if (file) {
-        const imageDetails = await this.cloudinaryService.uploadFile(
+        imageDetails = await this.cloudinaryService.uploadFile(
           file,
           userId,
           'Avatar',
         );
-        console.log(imageDetails);
-        picture = imageDetails.secure_url;
       }
     } catch (error) {
       throw new UnsupportedMediaTypeException({
@@ -82,16 +79,31 @@ export class ProfileService {
         statusCode: error.http_code,
       });
     }
-
     try {
-      const profile = await this.doesProfileExists(profileId);
-
-      if (profile) {
-        if (profile.user.id !== userId) {
-          throw new UnauthorizedException(
-            'You can only update your own profile',
-          );
-        }
+      const picture = imageDetails.secure_url;
+      const existingProfile = await this.prismaService.profile.findUnique({
+        where: {
+          userId: userId,
+        },
+      });
+      if (!existingProfile) {
+        const createdProfile = await this.prismaService.profile.create({
+          data: {
+            ...(bio && { bio }),
+            ...(picture && { picture }),
+            ...(hobbies && { hobbies }),
+            user: {
+              connect: {
+                id: userId,
+              },
+            },
+          },
+          select: {
+            ...profileSelect,
+          },
+        });
+        return createdProfile;
+      } else {
         const updatedProfile = await this.prismaService.profile.update({
           where: {
             userId,
@@ -106,37 +118,18 @@ export class ProfileService {
           },
         });
         return updatedProfile;
-      } else {
-        const existingProfile = await this.prismaService.profile.findUnique({
-          where: {
-            userId: userId,
-          },
-        });
-
-        if (!existingProfile) {
-          const createdProfile = await this.prismaService.profile.create({
-            data: {
-              ...(bio && { bio }),
-              ...(picture && { picture }),
-              ...(hobbies && { hobbies }),
-              user: {
-                connect: {
-                  id: userId,
-                },
-              },
-            },
-            select: {
-              ...profileSelect,
-            },
-          });
-          return createdProfile;
-        } else {
-          throw new ForbiddenException({
-            message: 'User cannot have multiple profile',
+      }
+    } catch (error) {
+      if (imageDetails) {
+        try {
+          await this.cloudinaryService.deleteFile(imageDetails.public_id);
+        } catch (error) {
+          throw new UnprocessableEntityException({
+            message:
+              'Error throw create/update profile and could not delete file that has been create to cloudinary.',
           });
         }
       }
-    } catch (error) {
       throw new HttpException(error.message, error.status);
     }
   }

@@ -1,14 +1,17 @@
 import { $Enums, InclusionType } from '@prisma/client';
+import { Type } from 'class-transformer';
 import {
   IsArray,
   IsEnum,
   IsNotEmpty,
   IsOptional,
   IsString,
+  ArrayMinSize,
   Validate,
   ValidationArguments,
   ValidatorConstraint,
   ValidatorConstraintInterface,
+  ValidateNested,
 } from 'class-validator';
 
 @ValidatorConstraint({ name: 'isNotDuplicate', async: false })
@@ -24,6 +27,14 @@ class IsNotDuplicate implements ValidatorConstraintInterface {
   defaultMessage(validationArguments?: ValidationArguments): string {
     return 'The inclusive array can not contains duplicate values.';
   }
+}
+class File {
+  fieldname: string;
+  originalname: string;
+  encoding: string;
+  mimetype: string;
+  size: number;
+  buffer: Buffer;
 }
 export class CreateEventDTO {
   @IsString()
@@ -48,10 +59,13 @@ export class CreateEventDTO {
   limit?: string;
 
   @IsOptional()
-  @IsString()
-  @IsNotEmpty()
-  menu?: string;
+  @IsArray()
+  @ArrayMinSize(1)
+  @ValidateNested({ each: true })
+  @Type(() => File)
+  images: Array<Express.Multer.File>;
 
+  @IsOptional()
   @IsArray()
   @IsEnum(InclusionType, { each: true })
   @Validate(IsNotDuplicate)
@@ -76,8 +90,10 @@ export class UpdateEventDTO {
 
   @IsOptional()
   @IsArray()
-  @IsString()
-  images: string[];
+  @ArrayMinSize(1)
+  @ValidateNested({ each: true })
+  @Type(() => File)
+  images: Array<Express.Multer.File>;
 
   @IsOptional()
   @IsString()

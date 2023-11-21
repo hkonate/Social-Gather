@@ -90,10 +90,8 @@ export class UserService {
           userId,
         },
       });
-      const path = `SocialGather${
-        deletedProfile.picture.split('SocialGather')[1].split('.')[0]
-      }`;
-      const deletedFolder = await this.cloudinaryService.deleteFolder(path);
+
+      const deletedFolder = await this.cloudinaryService.deleteFolders(userId);
 
       const user = await this.prismaService.user.delete({
         where: {

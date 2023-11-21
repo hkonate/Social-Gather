@@ -8,7 +8,7 @@ export class CloudinaryService {
   uploadFile(
     file: Express.Multer.File,
     userId: string,
-    path: string
+    path: string,
   ): Promise<CloudinaryResponse> {
     return new Promise<CloudinaryResponse>((resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(
@@ -36,13 +36,38 @@ export class CloudinaryService {
     }
   }
 
-  async deleteFolder(path: string): Promise<CloudinaryResponse> {
+  async deleteFolders(userId: string): Promise<CloudinaryResponse> {
     try {
-      const deletedImages: CloudinaryResponse =
-        await cloudinary.api.delete_resources_by_prefix(path);
-      const deletedFolder: CloudinaryResponse =
-        await cloudinary.api.delete_folder(path);
-      return { ...deletedImages, ...deletedFolder };
+      let deleteDetails: CloudinaryResponse;
+      const avatarFolder = await cloudinary.search
+        .expression(`folder:SocialGather/${userId}/Avatar`)
+        .execute();
+      if (avatarFolder.total_count === 1) {
+        deleteDetails = {
+          ...(await cloudinary.api.delete_resources_by_prefix(
+            `folder:SocialGather/${userId}/Avatar`,
+          )),
+          ...(await cloudinary.api.delete_folder(
+            `folder:SocialGather/${userId}/Avatar`,
+          )),
+        };
+      }
+      const chatFolder = await cloudinary.search
+        .expression(`folder:SocialGather/${userId}/Chat`)
+        .execute();
+      if (chatFolder.total_count === 1) {
+        deleteDetails = {
+          ...deleteDetails,
+          ...(await cloudinary.api.delete_resources_by_prefix(
+            `folder:SocialGather/${userId}/Chat`,
+          )),
+          ...(await cloudinary.api.delete_folder(
+            `folder:SocialGather/${userId}/Chat`,
+          )),
+        };
+      }
+
+      return deleteDetails;
     } catch (error) {
       throw new ConflictException({
         message: error.message,
