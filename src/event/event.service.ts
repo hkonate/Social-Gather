@@ -248,18 +248,29 @@ export class EventService {
 
   //Delete an event
   async deleteEventById(id: string, userId: string) {
-    await this.doesUserHasAuthorization(id, userId);
-    await this.prismaService.message.deleteMany({
-      where: {
-        eventId: id,
-      },
-    });
-    await this.prismaService.event.delete({
-      where: {
-        id,
-      },
-      select,
-    });
+    try {
+      await this.doesUserHasAuthorization(id, userId);
+      const deletedMessages = await this.prismaService.message.deleteMany({
+        where: {
+          eventId: id,
+        },
+      });
+      const deletedEvent = await this.prismaService.event.delete({
+        where: {
+          id,
+        },
+        select,
+      });
+      const deletedFiles = await this.cloudinaryService.deleteFiles(
+        userId,
+        'Event',
+      );
+      return { ...deletedEvent, ...deletedMessages, ...deletedFiles };
+    } catch (error) {
+      throw new UnprocessableEntityException({
+        message: 'Error appeared during the process of delete event',
+      });
+    }
   }
 
   private async doesEventExists(eventId: string) {

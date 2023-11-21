@@ -21,6 +21,7 @@ import { EventService } from './event.service';
 import { AuthGuard, JWTPayloadType } from 'src/guards/auth.guards';
 import { User } from 'src/user/decorators/auth.decorators';
 import { FilesInterceptor } from '@nestjs/platform-express';
+import { CloudinaryResponse } from 'src/cloudinary/cloudinary-response';
 
 //ds
 @Controller('event')
@@ -72,7 +73,7 @@ export class EventController {
   deleteEventById(
     @Param('id', ParseUUIDPipe) id: string,
     @User() userPayload: JWTPayloadType,
-  ): Promise<void> {
+  ) {
     return this.eventService.deleteEventById(id, userPayload.id);
   }
 }
