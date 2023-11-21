@@ -49,12 +49,14 @@ export class EventController {
   }
 
   @Put('/:id')
+  @UseInterceptors(FilesInterceptor('files'))
   updateEventById(
+    @UploadedFiles() files: Array<Express.Multer.File>,
     @Param('id', ParseUUIDPipe) id: string,
     @Body() body: UpdateEventDTO,
     @User() userPayload: JWTPayloadType,
   ): Promise<EventResponsesDTO> {
-    return this.eventService.updateEventById(id, userPayload.id, body);
+    return this.eventService.updateEventById(id, userPayload.id, body, files);
   }
 
   @Put('/:id/:attend')

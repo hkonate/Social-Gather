@@ -130,7 +130,6 @@ export class AuthService {
         authTokens: true,
       },
     });
-    console.log(deleteToken);
     return deleteToken;
   }
 

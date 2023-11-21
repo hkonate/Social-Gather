@@ -3,8 +3,8 @@ import {
   NotFoundException,
   UnauthorizedException,
   HttpException,
-  ForbiddenException,
   UnsupportedMediaTypeException,
+  UnprocessableEntityException,
 } from '@nestjs/common';
 import { InclusionType } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -118,6 +118,7 @@ export class EventService {
         statusCode: error.http_code,
       });
     }
+
     try {
       this.eventTimeRestriction(schedule);
       const createdEvent = await this.prismaService.event.create({
@@ -126,7 +127,7 @@ export class EventService {
           description,
           schedule,
           ...(inclusive && { inclusive }),
-          ...(images && { images }),
+          ...(images.length > 0 && { images }),
           ...(limit && { limit }),
           address,
           listOfAttendees: {
@@ -147,6 +148,16 @@ export class EventService {
       });
       return createdEvent;
     } catch (error) {
+      if (images.length > 0) {
+        try {
+          await this.cloudinaryService.deleteFiles(userId, 'Event');
+        } catch (error) {
+          throw new UnprocessableEntityException({
+            message:
+              'Error throw create/update profile and could not delete file that has been create to cloudinary.',
+          });
+        }
+      }
       throw new HttpException(error.message, error.status);
     }
   }
@@ -189,16 +200,50 @@ export class EventService {
   async updateEventById(
     id: string,
     userId: string,
-    data: UpdateEvent,
+    { title, description, schedule, inclusive, limit, address }: UpdateEvent,
+    files: Array<Express.Multer.File>,
   ): Promise<EventResponsesDTO> {
-    await this.doesUserHasAuthorization(id, userId);
-    return this.prismaService.event.update({
-      where: {
-        id,
-      },
-      data,
-      select,
-    });
+    const images = [];
+    try {
+      if (files) {
+        await this.cloudinaryService.deleteFiles(userId, 'Event');
+        for (const file of files) {
+          const { secure_url } = await this.cloudinaryService.uploadFile(
+            file,
+            userId,
+            'Event',
+          );
+          images.push(secure_url);
+        }
+      }
+    } catch (error) {
+      throw new UnsupportedMediaTypeException({
+        message: error.message,
+        statusCode: error.http_code,
+      });
+    }
+    try {
+      const event = await this.doesUserHasAuthorization(id, userId);
+      this.eventTimeUpdateRestricction(event.schedule);
+      const updatedEvent = await this.prismaService.event.update({
+        where: {
+          id,
+        },
+        data: {
+          ...(title && { title }),
+          ...(description && { description }),
+          ...(schedule && { schedule }),
+          ...(inclusive && { inclusive }),
+          ...(limit && { limit }),
+          ...(address && { address }),
+          ...(images.length > 0 && { images }),
+        },
+        select,
+      });
+      return updatedEvent;
+    } catch (error) {
+      throw new HttpException(error.message, error.status);
+    }
   }
 
   //Delete an event
@@ -231,16 +276,27 @@ export class EventService {
   private async doesUserHasAuthorization(eventId: string, userId: string) {
     const event = await this.doesEventExists(eventId);
     if (event.creator.id !== userId) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('You are not the owner of the event.');
+    }
+    return event;
+  }
+
+  private eventTimeRestriction(eventTime: string) {
+    const tenMinutesAgo = new Date().getTime() * 10 * 60 * 1000;
+    const eventDate = new Date(eventTime).getTime();
+    if (tenMinutesAgo >= eventDate) {
+      throw new UnauthorizedException(
+        'You are not allow to create or join/unjoin an event whithin a short time.',
+      );
     }
   }
 
-  private eventTimeRestriction(time: string) {
-    const tenMinutesAgo = new Date().getTime() * 10 * 60 * 1000;
-    const eventDate = new Date(time).getTime();
-    if (tenMinutesAgo > eventDate) {
+  private eventTimeUpdateRestricction(eventTime: string) {
+    const threeHoursAgo = new Date().getTime() * 3 * 60 * 1000;
+    const eventDate = new Date(eventTime).getTime();
+    if (threeHoursAgo >= eventDate) {
       throw new UnauthorizedException(
-        'You are not allow to create or join/unjoin an event whith a short schedule',
+        'You are not allow to update an event within a short time.',
       );
     }
   }

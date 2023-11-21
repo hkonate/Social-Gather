@@ -25,7 +25,7 @@ export class AuthGuard implements CanActivate {
           id: payload.id,
         },
       });
-      if (!user) {
+      if (!user || user.authTokens.length === 0) {
         return false;
       }
       return true;

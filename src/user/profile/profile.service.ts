@@ -59,7 +59,6 @@ export class ProfileService {
   }
 
   async updateProfile(
-    profileId: string,
     userId: string,
     { bio, hobbies }: UpdateProfileParam,
     file: Express.Multer.File,
@@ -67,6 +66,7 @@ export class ProfileService {
     let imageDetails = null;
     try {
       if (file) {
+        await this.cloudinaryService.deleteFiles(userId, 'Avatar');
         imageDetails = await this.cloudinaryService.uploadFile(
           file,
           userId,

@@ -35,34 +35,64 @@ export class CloudinaryService {
       });
     }
   }
+  async deleteFiles(userId: string, path: string): Promise<CloudinaryResponse> {
+    try {
+      const deletedImages: CloudinaryResponse =
+        await cloudinary.api.delete_resources_by_prefix(
+          `SocialGather/${userId}/${path}`,
+        );
+
+      return deletedImages;
+    } catch (error) {
+      throw new ConflictException({
+        message: error.message,
+        statusCode: error.http_code,
+      });
+    }
+  }
 
   async deleteFolders(userId: string): Promise<CloudinaryResponse> {
     try {
       let deleteDetails: CloudinaryResponse;
       const avatarFolder = await cloudinary.search
-        .expression(`folder:SocialGather/${userId}/Avatar`)
+        .expression(`SocialGather/${userId}/Avatar`)
         .execute();
-      if (avatarFolder.total_count === 1) {
+      if (avatarFolder.total_count > 0) {
         deleteDetails = {
           ...(await cloudinary.api.delete_resources_by_prefix(
-            `folder:SocialGather/${userId}/Avatar`,
+            `SocialGather/${userId}/Avatar`,
           )),
           ...(await cloudinary.api.delete_folder(
-            `folder:SocialGather/${userId}/Avatar`,
+            `SocialGather/${userId}/Avatar`,
           )),
         };
       }
       const chatFolder = await cloudinary.search
-        .expression(`folder:SocialGather/${userId}/Chat`)
+        .expression(`SocialGather/${userId}/Chat`)
         .execute();
-      if (chatFolder.total_count === 1) {
+      if (chatFolder.total_count > 0) {
         deleteDetails = {
           ...deleteDetails,
           ...(await cloudinary.api.delete_resources_by_prefix(
-            `folder:SocialGather/${userId}/Chat`,
+            `SocialGather/${userId}/Chat`,
           )),
           ...(await cloudinary.api.delete_folder(
-            `folder:SocialGather/${userId}/Chat`,
+            `SocialGather/${userId}/Chat`,
+          )),
+        };
+      }
+      const eventFolder = await cloudinary.search
+        .expression(`SocialGather/${userId}/Event`)
+        .execute();
+
+      if (eventFolder.total_count > 0) {
+        deleteDetails = {
+          ...deleteDetails,
+          ...(await cloudinary.api.delete_resources_by_prefix(
+            `SocialGather/${userId}/Event`,
+          )),
+          ...(await cloudinary.api.delete_folder(
+            `SocialGather/${userId}/Event`,
           )),
         };
       }

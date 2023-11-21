@@ -31,14 +31,13 @@ export class ProfileController {
     return this.profileService.getProfile(id);
   }
 
-  @Put('/:id')
+  @Put()
   @UseInterceptors(FileInterceptor('file'))
   updateProfile(
     @UploadedFile() file: Express.Multer.File,
-    @Param('id', ParseUUIDPipe) id: string,
     @User() userPayload: JWTPayloadType,
     @Body() body: UpdateProfileDTO,
   ): Promise<ProfileResponsesDTO> {
-    return this.profileService.updateProfile(id, userPayload.id, body, file);
+    return this.profileService.updateProfile(userPayload.id, body, file);
   }
 }
