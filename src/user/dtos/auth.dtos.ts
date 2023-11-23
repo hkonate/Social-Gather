@@ -5,6 +5,7 @@ import {
   IsOptional,
   Matches,
   MinLength,
+  IsEmail,
 } from 'class-validator';
 
 export class SignupDTO {
@@ -33,6 +34,7 @@ export class SignupDTO {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
+  @IsEmail()
   email: string;
 
   @ApiProperty({
