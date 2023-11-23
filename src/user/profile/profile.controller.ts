@@ -26,7 +26,6 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 export class ProfileController {
   constructor(private readonly profileService: ProfileService) {}
 
-  @Post()
   @Get('/:id')
   getProfile(
     @Param('id', ParseUUIDPipe) id: string,
