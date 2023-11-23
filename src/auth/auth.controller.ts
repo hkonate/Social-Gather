@@ -16,6 +16,7 @@ import {
   ApiCreatedResponse,
   ApiBadRequestResponse,
   ApiConflictResponse,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 
 @ApiTags('Auth')
@@ -42,6 +43,7 @@ export class AuthController {
   }
 
   @UseGuards(AuthGuard)
+  @ApiBearerAuth()
   @Delete()
   deleteToken(
     @User() userPayload: JWTPayloadType,

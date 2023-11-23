@@ -38,33 +38,52 @@ class File {
   buffer: Buffer;
 }
 export class CreateEventDTO {
-  @ApiProperty()
+  @ApiProperty({ description: 'The title of the event', example: 'Quick' })
   @IsString()
   @IsNotEmpty()
   title: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'A short description of the event by the creator of the event',
+    example:
+      'I invite you to join me eat after school at Quick, which is a delicious fast food.',
+  })
   @IsString()
   @IsNotEmpty()
   description: string;
 
-  @ApiProperty()
+  @ApiProperty({ description: 'Appointment time', example: '2024-10-26T12:00' })
   @IsString()
   @IsNotEmpty()
   schedule: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'The location where the event will take place',
+    example: '25 Bd de Sébastopol, 75001 Paris',
+  })
   @IsString()
   @IsNotEmpty()
   address: string;
 
-  @ApiProperty({ required: false })
+  @ApiProperty({
+    description: 'Number of attendees',
+    example: 12,
+    default: 20,
+    required: false,
+  })
   @IsOptional()
   @IsString()
   @IsNotEmpty()
   limit?: string;
 
-  @ApiProperty({ required: false })
+  @ApiProperty({
+    description: "Imageses url of event's location or menu host by cloudinary",
+    example: [
+      'https://res.cloudinary.com/dyay2jzz5/image/upload/v1700517112/SocialGather/7a9a72da-7e90-4fdf-9b1c-a7ea25af34d6/Event/ceabynqkowpq6ntjwfkn.jpg,https://res.cloudinary.com/dyay2jzz5/image/upload/v1700517113/SocialGather/7a9a72da-7e90-4fdf-9b1c-a7ea25af34d6/Event/kjiqafhbyxghnunu4ame.jpg,https://res.cloudinary.com/dyay2jzz5/image/upload/v1700517114/SocialGather/7a9a72da-7e90-4fdf-9b1c-a7ea25af34d6/Event/rlwhzmowr7zigdebt0ud.jpg',
+      'https://res.cloudinary.com/dyay2jzz5/image/upload/v1700517112/SocialGather/7a9a72da-7e90-4fdf-9b1c-a7ea25af34d6/Event/ceabynqkowpq6ntjwfkn.jpg,https://res.cloudinary.com/dyay2jzz5/image/upload/v1700517113/SocialGather/7a9a72da-7e90-4fdf-9b1c-a7ea25af34d6/Event/kjiqafhbyxghnunu4ame.jpg,https://res.cloudinary.com/dyay2jzz5/image/upload/v1700517114/SocialGather/7a9a72da-7e90-4fdf-9b1c-a7ea25af34d6/Event/rlwhzmowr7zigdebt0ud.jpg',
+    ],
+    required: false,
+  })
   @IsOptional()
   @IsArray()
   @ArrayMinSize(1)
@@ -72,7 +91,12 @@ export class CreateEventDTO {
   @Type(() => File)
   images: Array<Express.Multer.File>;
 
-  @ApiProperty({ required: false })
+  @ApiProperty({
+    description:
+      'This describes the specific dietary preference(s) of the event',
+    example: ['HALAL', 'VEGAN', 'VEGE', 'CASHER', 'STANDARD'],
+    required: false,
+  })
   @IsOptional()
   @IsArray()
   @IsEnum(InclusionType, { each: true })
@@ -81,25 +105,45 @@ export class CreateEventDTO {
 }
 
 export class UpdateEventDTO {
-  @ApiProperty({ required: false })
+  @ApiProperty({
+    description: 'The title of the event',
+    example: 'Quick',
+    required: false,
+  })
   @IsOptional()
   @IsString()
   @IsNotEmpty()
   title?: string;
 
-  @ApiProperty({ required: false })
+  @ApiProperty({
+    description: 'A short description of the event by the creator of the event',
+    example:
+      'I invite you to join me eat after school at Quick, which is a delicious fast food.',
+    required: false,
+  })
   @IsOptional()
   @IsString()
   @IsNotEmpty()
   description?: string;
 
-  @ApiProperty({ required: false })
+  @ApiProperty({
+    description: 'Appointment time',
+    example: '2024-10-26T12:00',
+    required: false,
+  })
   @IsOptional()
   @IsString()
   @IsNotEmpty()
   schedule?: string;
 
-  @ApiProperty({ required: false })
+  @ApiProperty({
+    description: "Imageses url of event's location or menu host by cloudinary",
+    example: [
+      'https://res.cloudinary.com/dyay2jzz5/image/upload/v1700517112/SocialGather/7a9a72da-7e90-4fdf-9b1c-a7ea25af34d6/Event/ceabynqkowpq6ntjwfkn.jpg,https://res.cloudinary.com/dyay2jzz5/image/upload/v1700517113/SocialGather/7a9a72da-7e90-4fdf-9b1c-a7ea25af34d6/Event/kjiqafhbyxghnunu4ame.jpg,https://res.cloudinary.com/dyay2jzz5/image/upload/v1700517114/SocialGather/7a9a72da-7e90-4fdf-9b1c-a7ea25af34d6/Event/rlwhzmowr7zigdebt0ud.jpg',
+      'https://res.cloudinary.com/dyay2jzz5/image/upload/v1700517112/SocialGather/7a9a72da-7e90-4fdf-9b1c-a7ea25af34d6/Event/ceabynqkowpq6ntjwfkn.jpg,https://res.cloudinary.com/dyay2jzz5/image/upload/v1700517113/SocialGather/7a9a72da-7e90-4fdf-9b1c-a7ea25af34d6/Event/kjiqafhbyxghnunu4ame.jpg,https://res.cloudinary.com/dyay2jzz5/image/upload/v1700517114/SocialGather/7a9a72da-7e90-4fdf-9b1c-a7ea25af34d6/Event/rlwhzmowr7zigdebt0ud.jpg',
+    ],
+    required: false,
+  })
   @IsOptional()
   @IsArray()
   @ArrayMinSize(1)
@@ -107,19 +151,33 @@ export class UpdateEventDTO {
   @Type(() => File)
   images: Array<Express.Multer.File>;
 
-  @ApiProperty({ required: false })
+  @ApiProperty({
+    description: 'The location where the event will take place',
+    example: '25 Bd de Sébastopol, 75001 Paris',
+    required: false,
+  })
   @IsOptional()
   @IsString()
   @IsNotEmpty()
   address?: string;
 
-  @ApiProperty({ required: false })
+  @ApiProperty({
+    description: 'Number of attendees',
+    example: 12,
+    default: 20,
+    required: false,
+  })
   @IsOptional()
   @IsString()
   @IsNotEmpty()
   limit?: string;
 
-  @ApiProperty({ required: false })
+  @ApiProperty({
+    description:
+      'This describes the specific dietary preference(s) of the event',
+    example: ['HALAL', 'VEGAN', 'VEGE', 'CASHER', 'STANDARD'],
+    required: false,
+  })
   @IsOptional()
   @IsArray()
   @IsEnum(InclusionType, { each: true })
@@ -128,19 +186,70 @@ export class UpdateEventDTO {
 }
 
 export class EventResponsesDTO {
+  @ApiProperty({ description: 'The title of the event', example: 'Quick' })
   title: string;
+
+  @ApiProperty({
+    description: 'A short description of the event by the creator of the event',
+    example:
+      'I invite you to join me eat after school at Quick, which is a delicious fast food.',
+  })
   description: string;
+
+  @ApiProperty({
+    description: 'Appointment time',
+    example: '2024-10-26T12:00',
+  })
   schedule: string;
+
+  @ApiProperty({
+    description: 'The location where the event will take place',
+    example: '25 Bd de Sébastopol, 75001 Paris',
+  })
   address: string;
+
+  @ApiProperty({
+    description: "Imageses url of event's location or menu host by cloudinary",
+    example: [
+      'https://res.cloudinary.com/dyay2jzz5/image/upload/v1700517112/SocialGather/7a9a72da-7e90-4fdf-9b1c-a7ea25af34d6/Event/ceabynqkowpq6ntjwfkn.jpg,https://res.cloudinary.com/dyay2jzz5/image/upload/v1700517113/SocialGather/7a9a72da-7e90-4fdf-9b1c-a7ea25af34d6/Event/kjiqafhbyxghnunu4ame.jpg,https://res.cloudinary.com/dyay2jzz5/image/upload/v1700517114/SocialGather/7a9a72da-7e90-4fdf-9b1c-a7ea25af34d6/Event/rlwhzmowr7zigdebt0ud.jpg',
+      'https://res.cloudinary.com/dyay2jzz5/image/upload/v1700517112/SocialGather/7a9a72da-7e90-4fdf-9b1c-a7ea25af34d6/Event/ceabynqkowpq6ntjwfkn.jpg,https://res.cloudinary.com/dyay2jzz5/image/upload/v1700517113/SocialGather/7a9a72da-7e90-4fdf-9b1c-a7ea25af34d6/Event/kjiqafhbyxghnunu4ame.jpg,https://res.cloudinary.com/dyay2jzz5/image/upload/v1700517114/SocialGather/7a9a72da-7e90-4fdf-9b1c-a7ea25af34d6/Event/rlwhzmowr7zigdebt0ud.jpg',
+    ],
+  })
   images: string[];
+
+  @ApiProperty({ description: 'Number of attendees', example: 12, default: 20 })
   limit: string;
+
+  @ApiProperty({
+    description:
+      'This describes the specific dietary preference(s) of the event',
+    example: ['HALAL', 'VEGAN', 'VEGE', 'CASHER', 'STANDARD'],
+  })
   inclusive: $Enums.InclusionType[];
+
+  @ApiProperty({
+    description: "Informations of event's creator",
+    example: {
+      id: '7a9a72da-7e90-4fdf-9b1c-a7ea25af34d7',
+      pseudo: 'JohnDoe',
+      phone: '0612234556',
+      email: 'johndoe@gmail.com',
+    },
+  })
   creator: {
     id: string;
     pseudo: string;
     phone: string;
     email: string;
   };
+
+  @ApiProperty({
+    description: 'The id of all attendees',
+    example: [
+      '7a9a72da-7e90-4fdf-9b1c-a7ea25af34d7',
+      '7a9a72da-7e90-4fdf-9b1c-a7ea25af34d4',
+    ],
+  })
   listOfAttendees: {
     id: string;
   }[];

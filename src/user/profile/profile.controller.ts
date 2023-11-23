@@ -18,10 +18,11 @@ import {
 } from 'src/user/dtos/profile.dtos';
 import { AuthGuard, JWTPayloadType } from 'src/guards/auth.guards';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 @ApiTags('Profile')
 @Controller('profile')
 @UseGuards(AuthGuard)
+@ApiBearerAuth()
 export class ProfileController {
   constructor(private readonly profileService: ProfileService) {}
 

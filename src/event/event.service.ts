@@ -247,7 +247,10 @@ export class EventService {
   }
 
   //Delete an event
-  async deleteEventById(id: string, userId: string) {
+  async deleteEventById(
+    id: string,
+    userId: string,
+  ): Promise<EventResponsesDTO> {
     try {
       await this.doesUserHasAuthorization(id, userId);
       const deletedMessages = await this.prismaService.message.deleteMany({
@@ -265,7 +268,7 @@ export class EventService {
         userId,
         'Event',
       );
-      return { ...deletedEvent, ...deletedMessages, ...deletedFiles };
+      return deletedEvent;
     } catch (error) {
       throw new UnprocessableEntityException({
         message: 'Error appeared during the process of delete event',
