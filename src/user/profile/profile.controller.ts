@@ -1,7 +1,6 @@
 import {
   Controller,
   UseGuards,
-  Post,
   Body,
   ParseUUIDPipe,
   Param,
@@ -9,6 +8,7 @@ import {
   Put,
   UploadedFile,
   UseInterceptors,
+  HttpCode,
 } from '@nestjs/common';
 import { ProfileService } from './profile.service';
 import { User } from 'src/user/decorators/auth.decorators';
@@ -42,6 +42,7 @@ export class ProfileController {
   @ApiUnprocessableEntityResponse({ description: 'Could not process query' })
   @ApiNotFoundResponse({ description: 'That profile does not exist' })
   @ApiParam({ name: 'id', example: '7a9a72da-7e90-4fdf-9b1c-a7ea25af34d7' })
+  @HttpCode(302)
   @Get('/:id')
   getProfile(
     @Param('id', ParseUUIDPipe) id: string,

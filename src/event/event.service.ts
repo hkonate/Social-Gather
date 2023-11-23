@@ -253,7 +253,7 @@ export class EventService {
   ): Promise<EventResponsesDTO> {
     try {
       await this.doesUserHasAuthorization(id, userId);
-      const deletedMessages = await this.prismaService.message.deleteMany({
+      await this.prismaService.message.deleteMany({
         where: {
           eventId: id,
         },
@@ -264,10 +264,7 @@ export class EventService {
         },
         select,
       });
-      const deletedFiles = await this.cloudinaryService.deleteFiles(
-        userId,
-        'Event',
-      );
+      await this.cloudinaryService.deleteFiles(userId, 'Event');
       return deletedEvent;
     } catch (error) {
       throw new UnprocessableEntityException({
@@ -282,7 +279,7 @@ export class EventService {
       select,
     });
     if (!event) {
-      throw new NotFoundException();
+      throw new NotFoundException('That event does not exist');
     }
     return event;
   }

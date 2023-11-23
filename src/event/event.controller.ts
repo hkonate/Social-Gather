@@ -26,13 +26,15 @@ import {
   ApiBearerAuth,
   ApiCreatedResponse,
   ApiFoundResponse,
+  ApiNotFoundResponse,
   ApiOkResponse,
   ApiParam,
   ApiQuery,
   ApiTags,
+  ApiUnauthorizedResponse,
+  ApiUnprocessableEntityResponse,
+  ApiUnsupportedMediaTypeResponse,
 } from '@nestjs/swagger';
-import { InclusionType } from '@prisma/client';
-//ds
 @ApiTags('Event')
 @Controller('event')
 @UseGuards(AuthGuard)
@@ -53,6 +55,7 @@ export class EventController {
     description: 'Founded an event object as response',
     type: EventResponsesDTO,
   })
+  @ApiNotFoundResponse({ description: 'That event does not exist' })
   @HttpCode(302)
   @Get('/:id')
   @ApiParam({
@@ -70,6 +73,14 @@ export class EventController {
   @ApiCreatedResponse({
     description: 'Created an event object as response',
     type: EventResponsesDTO,
+  })
+  @ApiUnsupportedMediaTypeResponse({ description: 'File type not supported' })
+  @ApiUnauthorizedResponse({
+    description: 'You are not allow to create an event whithin a short time.',
+  })
+  @ApiUnprocessableEntityResponse({
+    description:
+      'Error throw create/update profile and could not delete file that has been create to cloudinary.',
   })
   @HttpCode(201)
   @Post()
@@ -98,6 +109,15 @@ export class EventController {
     example: ['HALAL', 'STANDARD'],
     required: false,
   })
+  @ApiUnsupportedMediaTypeResponse({
+    description: "File's type is not supported",
+  })
+  @ApiUnauthorizedResponse({
+    description: 'You are not the owner of the event.',
+  })
+  @ApiUnauthorizedResponse({
+    description: 'You are not allow to update an event within a short time.',
+  })
   @HttpCode(200)
   @Put('/:id')
   @ApiParam({
@@ -121,6 +141,18 @@ export class EventController {
       'Updated the list of attendees for an event object as a response',
     type: EventResponsesDTO,
   })
+  @ApiFoundResponse({ description: 'That event does not exist' })
+  @ApiUnauthorizedResponse({
+    description:
+      'You are not allow to join/unjoin an event whithin a short time.',
+  })
+  @ApiUnauthorizedResponse({
+    description:
+      'The creator of the event is not allow to join or unjoin the event',
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Event reach attendees limit, you cannot attend it.',
+  })
   @HttpCode(200)
   @Put('/:id/:attend')
   attendEvent(
@@ -131,6 +163,12 @@ export class EventController {
     return this.eventService.attendEvent(id, attend, userPayload);
   }
 
+  @ApiUnauthorizedResponse({
+    description: 'You are not the owner of the event.',
+  })
+  @ApiUnprocessableEntityResponse({
+    description: 'Error appeared during the process of delete event',
+  })
   @Delete('/:id')
   @ApiOkResponse({
     description: 'Deleted event object as response',
