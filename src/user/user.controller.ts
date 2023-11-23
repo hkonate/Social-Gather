@@ -12,11 +12,17 @@ import { AuthGuard, JWTPayloadType } from 'src/guards/auth.guards';
 import { UserService } from './user.service';
 import { User } from './decorators/auth.decorators';
 import { UpdateUserDTO, UserResponsesDTO } from './dtos/user.dtos';
-import { ApiBearerAuth, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiForbiddenResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 @ApiTags('User')
 @Controller('user')
 @UseGuards(AuthGuard)
 @ApiBearerAuth()
+@ApiForbiddenResponse({ description: 'Forbidden resource' })
 export class UserController {
   constructor(private readonly userService: UserService) {}
 

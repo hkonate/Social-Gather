@@ -20,6 +20,7 @@ import { AuthGuard, JWTPayloadType } from 'src/guards/auth.guards';
 import { FileInterceptor } from '@nestjs/platform-express';
 import {
   ApiBearerAuth,
+  ApiForbiddenResponse,
   ApiFoundResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
@@ -32,6 +33,7 @@ import {
 @Controller('profile')
 @UseGuards(AuthGuard)
 @ApiBearerAuth()
+@ApiForbiddenResponse({ description: 'Forbidden resource' })
 export class ProfileController {
   constructor(private readonly profileService: ProfileService) {}
 

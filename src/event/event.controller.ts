@@ -25,6 +25,7 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 import {
   ApiBearerAuth,
   ApiCreatedResponse,
+  ApiForbiddenResponse,
   ApiFoundResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
@@ -39,6 +40,7 @@ import {
 @Controller('event')
 @UseGuards(AuthGuard)
 @ApiBearerAuth()
+@ApiForbiddenResponse({ description: 'Forbidden resource' })
 export class EventController {
   constructor(private readonly eventService: EventService) {}
   @ApiFoundResponse({
