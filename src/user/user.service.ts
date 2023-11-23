@@ -6,6 +6,7 @@ import {
 import { PrismaService } from 'src/prisma/prisma.service';
 import * as jwt from 'jsonwebtoken';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
+import { UserResponsesDTO } from './dtos/user.dtos';
 interface UpdateUserParams {
   firstname?: string;
   lastname?: string;
@@ -45,7 +46,7 @@ export class UserService {
         select,
       });
       if (!users) {
-        throw new NotFoundException();
+        throw new NotFoundException('Users not found');
       }
       return users;
     } catch (error) {
@@ -53,7 +54,7 @@ export class UserService {
     }
   }
 
-  async getUser(userId: string) {
+  async getUser(userId: string): Promise<UserResponsesDTO> {
     try {
       const user = await this.prismaService.user.findUnique({
         where: { id: userId },
@@ -65,7 +66,10 @@ export class UserService {
     }
   }
 
-  async updateUser(userId: string, data: UpdateUserParams) {
+  async updateUser(
+    userId: string,
+    data: UpdateUserParams,
+  ): Promise<UserResponsesDTO> {
     try {
       if (data.password) {
         data.password = jwt.sign(data.password, process.env.JSON_WEB_KEY);
@@ -83,18 +87,14 @@ export class UserService {
     }
   }
 
-  async deleteUser(userId: string) {
+  async deleteUser(userId: string): Promise<UserResponsesDTO> {
     try {
-      let deletedProfile = null;
-      let deletedEvent = null;
-      let deletedMessages = null;
-
       const profile = await this.prismaService.profile.findUnique({
         where: { userId },
       });
 
       if (profile) {
-        deletedProfile = await this.prismaService.profile.delete({
+        await this.prismaService.profile.delete({
           where: {
             userId,
           },
@@ -112,40 +112,27 @@ export class UserService {
             },
           });
           if (messages.length > 0) {
-            const deletedMessage = await this.prismaService.message.deleteMany({
+            await this.prismaService.message.deleteMany({
               where: {
                 eventId: event.id,
               },
             });
-            deletedMessages.push(deletedMessage);
           }
         }
-        deletedEvent = await this.prismaService.event.deleteMany({
+        await this.prismaService.event.deleteMany({
           where: { creatorId: userId },
         });
       }
 
-      const deletedFolder = await this.cloudinaryService.deleteFolders(userId);
+      await this.cloudinaryService.deleteFolders(userId);
 
       const deletedUser = await this.prismaService.user.delete({
         where: {
           id: userId,
         },
-        select: {
-          id: true,
-          firstname: true,
-          lastname: true,
-          pseudo: true,
-          email: true,
-        },
+        select,
       });
-      return {
-        ...deletedUser,
-        ...deletedProfile,
-        ...deletedEvent,
-        ...deletedMessages,
-        ...deletedFolder,
-      };
+      return deletedUser;
     } catch (error) {
       throw new UnprocessableEntityException(error);
     }

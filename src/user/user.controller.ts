@@ -7,6 +7,7 @@ import {
   Body,
   Param,
   ParseUUIDPipe,
+  HttpCode,
 } from '@nestjs/common';
 import { AuthGuard, JWTPayloadType } from 'src/guards/auth.guards';
 import { UserService } from './user.service';
@@ -16,7 +17,11 @@ import {
   ApiBearerAuth,
   ApiCreatedResponse,
   ApiForbiddenResponse,
+  ApiFoundResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse,
   ApiTags,
+  ApiUnprocessableEntityResponse,
 } from '@nestjs/swagger';
 @ApiTags('User')
 @Controller('user')
@@ -26,20 +31,40 @@ import {
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @ApiCreatedResponse({
-    description: 'Created user object as response',
-    type: Array<UserResponsesDTO>,
+  @ApiFoundResponse({
+    description: 'Found array of users objects as response',
+    type: [UserResponsesDTO],
   })
+  @ApiNotFoundResponse({ description: 'Users not found' })
+  @ApiUnprocessableEntityResponse({
+    description: 'An error occurred',
+  })
+  @HttpCode(302)
   @Get()
   getUsers(@User() userPayload: JWTPayloadType): Promise<UserResponsesDTO[]> {
     return this.userService.getUsers(userPayload.id);
   }
 
+  @ApiFoundResponse({
+    description: 'Found user object as response',
+    type: UserResponsesDTO,
+  })
+  @ApiUnprocessableEntityResponse({
+    description: 'An error occurred',
+  })
+  @HttpCode(302)
   @Get('/:id')
   getUser(@Param('id', ParseUUIDPipe) id: string): Promise<UserResponsesDTO> {
     return this.userService.getUser(id);
   }
 
+  @ApiOkResponse({
+    description: 'Updated user object as response',
+    type: UserResponsesDTO,
+  })
+  @ApiUnprocessableEntityResponse({
+    description: 'An error occurred',
+  })
   @Put()
   updateUser(
     @User() userPayload: JWTPayloadType,
@@ -48,8 +73,15 @@ export class UserController {
     return this.userService.updateUser(userPayload.id, body);
   }
 
+  @ApiOkResponse({
+    description: 'Deleted user object as response',
+    type: UserResponsesDTO,
+  })
+  @ApiUnprocessableEntityResponse({
+    description: 'An error occurred',
+  })
   @Delete()
-  deleteUser(@User() userPayload: JWTPayloadType) {
+  deleteUser(@User() userPayload: JWTPayloadType): Promise<UserResponsesDTO> {
     return this.userService.deleteUser(userPayload.id);
   }
 }
