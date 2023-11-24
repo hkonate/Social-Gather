@@ -293,7 +293,7 @@ export class EventService {
   }
 
   private eventTimeRestriction(eventTime: string) {
-    const tenMinutesAgo = new Date().getTime() * 10 * 60 * 1000;
+    const tenMinutesAgo = new Date().getTime() + 10 * 60 * 1000;
     const eventDate = new Date(eventTime).getTime();
     if (tenMinutesAgo >= eventDate) {
       throw new UnauthorizedException(
@@ -303,7 +303,7 @@ export class EventService {
   }
 
   private eventTimeUpdateRestricction(eventTime: string) {
-    const threeHoursAgo = new Date().getTime() * 3 * 60 * 1000;
+    const threeHoursAgo = new Date().getTime() + 3 * 60 * 60 * 1000;
     const eventDate = new Date(eventTime).getTime();
     if (threeHoursAgo >= eventDate) {
       throw new UnauthorizedException(
