@@ -119,25 +119,6 @@ export class SigninDTO {
   password: string;
 }
 
-export class SigninResponseDTO {
-  @ApiProperty({
-    description: 'JsonWebToken of the user',
-    example:
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoieW9hbjkxIiwiaWQiOiJhNWQzY2ZjMi1lOTM5LTRhNjUtYTQxZS05Nzg1NTA4Y2ZlYjEiLCJpYXQiOjE3MDA1NTc4NzIsImV4cCI6MTcwNDE1Nzg3Mn0.nAO8uesvHBO2NoSE-kmqxRYkYO3c0oI6FvnYjWJSAD4',
-  })
-  @IsString()
-  @IsNotEmpty()
-  token: string;
-
-  @ApiProperty({
-    description: 'ID of the user',
-    example: '269141d9-0f3c-452b-a0b1-9fab89b68f57',
-  })
-  @IsNotEmpty()
-  @IsUUID()
-  userId: string;
-}
-
 export class DeleteResponseDTO {
   @ApiProperty({
     description: 'ID of the user',
@@ -182,3 +163,4 @@ export class DeleteResponseDTO {
   @IsString({ each: true })
   authTokens: string[];
 }
+export class SigninResponseDTO extends DeleteResponseDTO {}

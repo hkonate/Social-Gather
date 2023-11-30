@@ -105,7 +105,7 @@ export class AuthService {
       const isCorrect = await bcrypt.compare(password, user.password);
       if (isCorrect) {
         const token = this.generateJWT(user.pseudo, user.id);
-        await this.prismaService.user.update({
+        const updatedUser = await this.prismaService.user.update({
           where: {
             id: user.id,
           },
@@ -113,7 +113,7 @@ export class AuthService {
             authTokens: [...user.authTokens, token],
           },
         });
-        return { token, userId: user.id };
+        return updatedUser;
       } else {
         throw new HttpException('invalid credential', 400);
       }
