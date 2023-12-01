@@ -92,6 +92,18 @@ export class SignupResponseDto {
   @IsNotEmpty()
   @IsEmail()
   email: string;
+
+  @ApiProperty({
+    description: 'List of users JsonWebTokens',
+    example: [
+      'oiEhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoieW9hbjkxIiwiaWQiOiJhNWQzY2ZjMi1lOTM5LTRhNjUtYTQxZS05Nzg1NTA4Y2ZlYjEiLCJpYXQiOjE3MDA1NTc4NzIsImV4cCI6MTcwNDE1Nzg3Mn0.nAO8uesvHBO2NoSE-kmqxRYkYO3c0oI6FvnYjWJSAD4',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoieW9hbjkxIiwiaWQiOiJhNWQzY2ZjMi1lOTM5LTRhNjUtYTQxZS04Nzg1NTA4Y2ZlYjEiLCJpYXQiOjE3MDA1NTc4NzIsImV4cCI6MTcwNDE1Nzg3Mn0.nAO8uesvHBO2NoSE-kmqxRYkYO3c0oI6FvnYjWJSAD9',
+    ],
+  })
+  @IsArray()
+  @IsNotEmpty({ each: true })
+  @IsString({ each: true })
+  authTokens: string[];
 }
 
 export class SigninDTO {
