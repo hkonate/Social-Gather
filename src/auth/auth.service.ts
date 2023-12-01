@@ -73,6 +73,7 @@ export class AuthService {
           lastname: true,
           pseudo: true,
           email: true,
+          authTokens: true,
         },
       });
 
