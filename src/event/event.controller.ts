@@ -92,6 +92,8 @@ export class EventController {
     @Body() body: CreateEventDTO,
     @User() userPayload: JWTPayloadType,
   ): Promise<EventResponsesDTO> {
+    console.log(body);
+
     return this.eventService.createEvent(body, userPayload.id, files);
   }
 
