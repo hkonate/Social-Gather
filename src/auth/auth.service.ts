@@ -73,11 +73,28 @@ export class AuthService {
           lastname: true,
           pseudo: true,
           email: true,
+          password: true,
           authTokens: true,
         },
       });
-
-      return user;
+      if (!user) {
+        throw new HttpException('invalid credential', 400);
+      }
+      const isCorrect = await bcrypt.compare(password, user.password);
+      if (isCorrect) {
+        const token = this.generateJWT(user.pseudo, user.id);
+        const updatedUser = await this.prismaService.user.update({
+          where: {
+            id: user.id,
+          },
+          data: {
+            authTokens: [...user.authTokens, token],
+          },
+        });
+        return updatedUser;
+      } else {
+        throw new HttpException('invalid credential', 400);
+      }
     } catch (error) {
       throw new HttpException(error.message, error.status);
     }
