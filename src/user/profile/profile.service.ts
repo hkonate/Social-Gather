@@ -80,7 +80,7 @@ export class ProfileService {
       });
     }
     try {
-      const picture = imageDetails.secure_url;
+      const picture = imageDetails?.secure_url;
       const existingProfile = await this.prismaService.profile.findUnique({
         where: {
           userId: userId,
