@@ -47,7 +47,6 @@ export class EventController {
     description: 'Founded an array of events object as response',
     type: [EventResponsesDTO],
   })
-  @HttpCode(302)
   @Get()
   getEvents(): Promise<EventResponsesDTO[]> {
     return this.eventService.getEvents();
@@ -58,7 +57,6 @@ export class EventController {
     type: EventResponsesDTO,
   })
   @ApiNotFoundResponse({ description: 'That event does not exist' })
-  @HttpCode(302)
   @Get('/:id')
   @ApiParam({
     name: 'id',

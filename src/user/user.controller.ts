@@ -39,7 +39,6 @@ export class UserController {
   @ApiUnprocessableEntityResponse({
     description: 'An error occurred',
   })
-  @HttpCode(302)
   @Get()
   getUsers(@User() userPayload: JWTPayloadType): Promise<UserResponsesDTO[]> {
     return this.userService.getUsers(userPayload.id);
@@ -52,7 +51,6 @@ export class UserController {
   @ApiUnprocessableEntityResponse({
     description: 'An error occurred',
   })
-  @HttpCode(302)
   @Get('/:id')
   getUser(@Param('id', ParseUUIDPipe) id: string): Promise<UserResponsesDTO> {
     return this.userService.getUser(id);
