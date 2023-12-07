@@ -4,7 +4,7 @@ import {
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import * as jwt from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { UserResponsesDTO } from './dtos/user.dtos';
 interface UpdateUserParams {
@@ -72,7 +72,10 @@ export class UserService {
   ): Promise<UserResponsesDTO> {
     try {
       if (data.password) {
-        data.password = jwt.sign(data.password, process.env.JSON_WEB_KEY);
+        data.password = await bcrypt.hash(
+          data.password,
+          process.env.JSON_WEB_KEY,
+        );
       }
       const updatedUser = await this.prismaService.user.update({
         where: {

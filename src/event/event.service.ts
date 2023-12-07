@@ -24,7 +24,6 @@ interface CreateEventParams {
 interface UpdateEvent {
   title?: string;
   description?: string;
-  schedule?: string;
   address?: string;
   limit?: string;
   inclusive?: InclusionType[];
@@ -200,7 +199,7 @@ export class EventService {
   async updateEventById(
     id: string,
     userId: string,
-    { title, description, schedule, inclusive, limit, address }: UpdateEvent,
+    { title, description, inclusive, limit, address }: UpdateEvent,
     files: Array<Express.Multer.File>,
   ): Promise<EventResponsesDTO> {
     const images = [];
@@ -225,6 +224,11 @@ export class EventService {
     try {
       const event = await this.doesUserHasAuthorization(id, userId);
       this.eventTimeUpdateRestricction(event.schedule);
+      if (parseInt(limit) < event.listOfAttendees.length) {
+        throw new UnauthorizedException(
+          "You are not allow to have a limit lower than attendee's number",
+        );
+      }
       const updatedEvent = await this.prismaService.event.update({
         where: {
           id,
@@ -232,7 +236,6 @@ export class EventService {
         data: {
           ...(title && { title }),
           ...(description && { description }),
-          ...(schedule && { schedule }),
           ...(inclusive && { inclusive }),
           ...(limit && { limit }),
           ...(address && { address }),

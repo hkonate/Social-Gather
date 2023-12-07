@@ -84,14 +84,12 @@ export class EventController {
   })
   @HttpCode(201)
   @Post()
-  @UseInterceptors(FilesInterceptor('files'))
+  @UseInterceptors(FilesInterceptor('files', 10, { limits: { files: 10 } }))
   createEvent(
     @UploadedFiles() files: Array<Express.Multer.File>,
     @Body() body: CreateEventDTO,
     @User() userPayload: JWTPayloadType,
   ): Promise<EventResponsesDTO> {
-    console.log(body);
-
     return this.eventService.createEvent(body, userPayload.id, files);
   }
 
@@ -128,7 +126,7 @@ export class EventController {
     description: 'ID of the event',
     example: '269141d9-0f3c-452b-a0b1-9fab89b68f57',
   })
-  @UseInterceptors(FilesInterceptor('files'))
+  @UseInterceptors(FilesInterceptor('files', 10, { limits: { files: 10 } }))
   updateEventById(
     @UploadedFiles() files: Array<Express.Multer.File>,
     @Param('id', ParseUUIDPipe) id: string,
