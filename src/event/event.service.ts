@@ -224,7 +224,10 @@ export class EventService {
     try {
       const event = await this.doesUserHasAuthorization(id, userId);
       this.eventTimeUpdateRestricction(event.schedule);
-      if (parseInt(limit) < event.listOfAttendees.length) {
+      if (
+        parseInt(limit) < event.listOfAttendees.length ||
+        parseInt(limit) < 2
+      ) {
         throw new UnauthorizedException(
           "You are not allow to have a limit lower than attendee's number",
         );
