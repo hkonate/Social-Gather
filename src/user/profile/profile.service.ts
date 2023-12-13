@@ -135,12 +135,14 @@ export class ProfileService {
   }
 
   private async doesProfileExists(
-    profileId: string,
+    userId: string,
   ): Promise<ProfileServiceResponses> {
     try {
       const profile = await this.prismaService.profile.findUnique({
         where: {
-          id: profileId,
+          user:{
+            id: userId,
+          } 
         },
         select: {
           ...profileSelect,
