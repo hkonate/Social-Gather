@@ -138,19 +138,12 @@ export class ProfileService {
     userId: string,
   ): Promise<ProfileServiceResponses> {
     try {
-      const user = await this.prismaService.user.findUnique({
-        where:{
-          id: userId
-        },
-        select:{
-          profile:{
-            id: true
-          }
-        }
-      })
       const profile = await this.prismaService.profile.findUnique({
-        where: { 
-            id: user.profile.id,
+        where: {
+          user:{
+          connect : {
+            id:userId,
+          } }
         },
         select: {
           ...profileSelect,
