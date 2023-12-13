@@ -1,10 +1,8 @@
 import {
   Injectable,
   NotFoundException,
-  UnauthorizedException,
   UnprocessableEntityException,
   UnsupportedMediaTypeException,
-  ForbiddenException,
   HttpException,
 } from '@nestjs/common';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';

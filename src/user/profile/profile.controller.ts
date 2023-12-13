@@ -8,7 +8,6 @@ import {
   Put,
   UploadedFile,
   UseInterceptors,
-  HttpCode,
 } from '@nestjs/common';
 import { ProfileService } from './profile.service';
 import { User } from 'src/user/decorators/auth.decorators';
