@@ -50,8 +50,8 @@ export class ProfileService {
     private readonly cloudinaryService: CloudinaryService,
   ) {}
 
-  getProfile(id: string): Promise<ProfileServiceResponses> {
-    const profile = this.doesProfileExists(id);
+ async getProfile(id: string): Promise<ProfileServiceResponses> {
+    const profile = await this.doesProfileExists(id);
     if (!profile) {
       throw new NotFoundException('That profile does not exist');
     }
