@@ -21,17 +21,17 @@ interface ProfileServiceResponses {
   user: {
     id: string;
     pseudo: string;
-    phone: string;
+    phone?: string;
     email: string;
-    listOfEventsCreated:{
-      id: string,
-      title: string,
-      limit: string,
-      images: string,
-      listOfAttendees:{
-        id: string,
-      }[]
-    }[]
+    listOfEventsCreated: {
+      id: string;
+      title: string;
+      limit: string;
+      images: string[];
+      listOfAttendees: {
+        id: string;
+      }[];
+    }[];
   };
 }
 
@@ -46,19 +46,19 @@ const profileSelect = {
       pseudo: true,
       phone: true,
       email: true,
-      listOfEventsCreated:[{
-        select:{
+      listOfEventsCreated: {
+        select: {
           id: true,
           title: true,
           limit: true,
           images: true,
-          listOfAttendees:[{
-            select:{
-              id: true
-            }
-        }]
-      }
-      }]
+          listOfAttendees: {
+            select: {
+              id: true,
+            },
+          },
+        },
+      },
     },
   },
 };
@@ -70,7 +70,7 @@ export class ProfileService {
     private readonly cloudinaryService: CloudinaryService,
   ) {}
 
- async getProfile(id: string): Promise<ProfileServiceResponses> {
+  async getProfile(id: string): Promise<ProfileServiceResponses> {
     const profile = await this.doesProfileExists(id);
     if (!profile) {
       throw new NotFoundException('That profile does not exist');

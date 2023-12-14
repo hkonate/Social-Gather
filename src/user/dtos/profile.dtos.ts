@@ -69,32 +69,38 @@ export class ProfileResponsesDTO {
       pseudo: 'JohnDoe',
       phone: '0612234556',
       email: 'johndoe@gmail.com',
-      listOfEventsCreated:{
+      listOfEventsCreated: {
         id: '7a9a72da-7e90-4fdf-9b1c-a7ea25af34g0',
-      title: "Quick",
-      limit: "16",
-      images: ['https://res.cloudinary.com/dyay2jzz5/image/upload/v1700517112/SocialGather/7a9a72da-7e90-4fdf-9b1c-a7ea25af34d6/Event/ceabynqkowpq6ntjwfkn.jpg,https://res.cloudinary.com/dyay2jzz5/image/upload/v1700517113/SocialGather/7a9a72da-7e90-4fdf-9b1c-a7ea25af34d6/Event/kjiqafhbyxghnunu4ame.jpg,https://res.cloudinary.com/dyay2jzz5/image/upload/v1700517114/SocialGather/7a9a72da-7e90-4fdf-9b1c-a7ea25af34d6/Event/rlwhzmowr7zigdebt0ud.jpg', 'https://res.cloudinary.com/dyay2jzz5/image/upload/v1700517112/SocialGather/7a9a72da-7e90-4fdf-9b1c-a7ea25af34d6/Event/ceabynqkowpq6ntjwfkn.jpg,https://res.cloudinary.com/dyay2jzz5/image/upload/v1700517113/SocialGather/7a9a72da-7e90-4fdf-9b1c-a7ea25af34d6/Event/kjiqafhbyxghnunu4ame.jpg,https://res.cloudinary.com/dyay2jzz5/image/upload/v1700517114/SocialGather/7a9a72da-7e90-4fdf-9b1c-a7ea25af34d6/Event/rlwhzmowr7zigdebt0ud.jpg'],
-      listOfAttendees:[{
-        id: '2z2d72da-7e90-4fdf-9b1c-a7ea25af34g0' ,
-      },{
-        id: '2z2d98da-7e90-4fdf-9b1c-a7ea87uf34g0' ,
-      }]
-      }
+        title: 'Quick',
+        limit: '16',
+        images: [
+          'https://res.cloudinary.com/dyay2jzz5/image/upload/v1700517112/SocialGather/7a9a72da-7e90-4fdf-9b1c-a7ea25af34d6/Event/ceabynqkowpq6ntjwfkn.jpg,https://res.cloudinary.com/dyay2jzz5/image/upload/v1700517113/SocialGather/7a9a72da-7e90-4fdf-9b1c-a7ea25af34d6/Event/kjiqafhbyxghnunu4ame.jpg,https://res.cloudinary.com/dyay2jzz5/image/upload/v1700517114/SocialGather/7a9a72da-7e90-4fdf-9b1c-a7ea25af34d6/Event/rlwhzmowr7zigdebt0ud.jpg',
+          'https://res.cloudinary.com/dyay2jzz5/image/upload/v1700517112/SocialGather/7a9a72da-7e90-4fdf-9b1c-a7ea25af34d6/Event/ceabynqkowpq6ntjwfkn.jpg,https://res.cloudinary.com/dyay2jzz5/image/upload/v1700517113/SocialGather/7a9a72da-7e90-4fdf-9b1c-a7ea25af34d6/Event/kjiqafhbyxghnunu4ame.jpg,https://res.cloudinary.com/dyay2jzz5/image/upload/v1700517114/SocialGather/7a9a72da-7e90-4fdf-9b1c-a7ea25af34d6/Event/rlwhzmowr7zigdebt0ud.jpg',
+        ],
+        listOfAttendees: [
+          {
+            id: '2z2d72da-7e90-4fdf-9b1c-a7ea25af34g0',
+          },
+          {
+            id: '2z2d98da-7e90-4fdf-9b1c-a7ea87uf34g0',
+          },
+        ],
+      },
     },
   })
   user: {
     id: string;
     pseudo: string;
-    phone: string;
+    phone?: string;
     email: string;
-    listOfEventsCreated:{
+    listOfEventsCreated: {
       id: string;
       title: string;
       limit: string;
-      images: string;
-      listOfAttendees:{
+      images: string[];
+      listOfAttendees: {
         id: string;
-      }[]
-    }[]
+      }[];
+    }[];
   };
 }
