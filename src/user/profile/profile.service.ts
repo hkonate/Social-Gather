@@ -23,7 +23,7 @@ interface ProfileServiceResponses {
     pseudo: string;
     phone: string;
     email: string;
-    listOfevents:{
+    listOfEventsCreated:{
       id: string,
       title: string,
       limit: string,
@@ -47,13 +47,14 @@ const profileSelect = {
       phone: true,
       email: true,
       listOfEventsCreated:{
-        id: true,
-        title: true,
-        limit: true,
-        images: true,
-        listOfAttendees:{
-          id: true
-        }
+        select:{
+          id: true,
+          title: true,
+          limit: true,
+          images: true,
+          listOfAttendees:{
+            id: true
+        }}
       }
     },
   },
