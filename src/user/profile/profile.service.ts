@@ -46,17 +46,19 @@ const profileSelect = {
       pseudo: true,
       phone: true,
       email: true,
-      listOfEventsCreated:[{
+      listOfEventsCreated:{
         select:{
           id: true,
           title: true,
           limit: true,
           images: true,
-          listOfAttendees:[{
-            id: true
-        }]
+          listOfAttendees:{
+            select:{
+              id: true
+            }
+        }
       }
-      }]
+      }
     },
   },
 };
