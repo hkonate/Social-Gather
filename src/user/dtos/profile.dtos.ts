@@ -94,7 +94,7 @@ export class ProfileResponsesDTO {
       images: string;
       listOfAttendees:{
         id: string;
-      }
-    }
+      }[]
+    }[]
   };
 }

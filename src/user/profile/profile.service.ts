@@ -30,8 +30,8 @@ interface ProfileServiceResponses {
       images: string,
       listOfAttendees:{
         id: string,
-      }
-    }
+      }[]
+    }[]
   };
 }
 
