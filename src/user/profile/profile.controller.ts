@@ -43,11 +43,11 @@ export class ProfileController {
   @ApiUnprocessableEntityResponse({ description: 'Could not process query' })
   @ApiNotFoundResponse({ description: 'That profile does not exist' })
   @ApiParam({ name: 'id', example: '7a9a72da-7e90-4fdf-9b1c-a7ea25af34d7' })
-  @Get('/:id')
+  @Get()
   getProfile(
-    @Param('id', ParseUUIDPipe) id: string,
+    @User() userPayload: JWTPayloadType,
   ): Promise<ProfileResponsesDTO> {
-    return this.profileService.getProfile(id);
+    return this.profileService.getProfile(userPayload.id);
   }
 
   @ApiOkResponse({

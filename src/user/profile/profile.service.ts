@@ -103,7 +103,7 @@ export class ProfileService {
       const picture = imageDetails?.secure_url;
       const existingProfile = await this.prismaService.profile.findUnique({
         where: {
-          userId: userId,
+          userId,
         },
       });
       if (!existingProfile) {
