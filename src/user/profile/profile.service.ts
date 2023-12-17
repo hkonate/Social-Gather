@@ -5,6 +5,7 @@ import {
   UnsupportedMediaTypeException,
   HttpException,
 } from '@nestjs/common';
+import { CategoryType, InclusionType } from '@prisma/client';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 
@@ -26,7 +27,10 @@ interface ProfileServiceResponses {
     listOfEventsCreated: {
       id: string;
       title: string;
-      limit: string;
+      limit: number;
+      price: number,
+      category: CategoryType,
+      inclusive: InclusionType[],
       images: string[];
       listOfAttendees: {
         id: string;
@@ -51,6 +55,9 @@ const profileSelect = {
           id: true,
           title: true,
           limit: true,
+          price: true,
+          category: true,
+          inclusive: true,
           images: true,
           listOfAttendees: {
             select: {

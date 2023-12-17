@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { $Enums, InclusionType } from '@prisma/client';
+import { $Enums, InclusionType, CategoryType } from '@prisma/client';
 import { Type } from 'class-transformer';
 import {
   IsArray,
@@ -13,6 +13,10 @@ import {
   ValidatorConstraint,
   ValidatorConstraintInterface,
   ValidateNested,
+  IsNumber,
+  Min,
+  IsDateString,
+  IsDate,
 } from 'class-validator';
 
 @ValidatorConstraint({ name: 'isNotDuplicate', async: false })
@@ -72,9 +76,29 @@ export class CreateEventDTO {
     required: false,
   })
   @IsOptional()
-  @IsString()
-  @IsNotEmpty()
-  limit?: string;
+  @IsNumber()
+  @Min(2)
+  limit?: number;
+
+  @ApiProperty({
+    description: 'Price of the event',
+    example: 18,
+    default: 0,
+    required: false,
+  })
+  @IsOptional()
+  @IsNumber()
+  price?: number;
+
+  @ApiProperty({
+    description:
+      'This describes the category of the event',
+    example: "MUSIC",
+    required: false,
+  })
+  @IsOptional()
+  @IsEnum(CategoryType)
+  category?: CategoryType
 
   @ApiProperty({
     description: "Imageses url of event's location or menu host by cloudinary",
@@ -158,9 +182,29 @@ export class UpdateEventDTO {
     required: false,
   })
   @IsOptional()
-  @IsString()
-  @IsNotEmpty()
-  limit?: string;
+  @IsNumber()
+  @Min(2)
+  limit?: number;
+
+  @ApiProperty({
+    description: 'Price of the event',
+    example: 18,
+    default: 0,
+    required: false,
+  })
+  @IsOptional()
+  @IsNumber()
+  price?: number;
+
+  @ApiProperty({
+    description:
+      'This describes the category of the event',
+    example: "MUSIC",
+    required: false,
+  })
+  @IsOptional()
+  @IsEnum(CategoryType)
+  category?: CategoryType
 
   @ApiProperty({
     description:
@@ -190,7 +234,7 @@ export class EventResponsesDTO {
     description: 'Appointment time',
     example: '2024-10-26T12:00',
   })
-  schedule: string;
+  schedule: Date;
 
   @ApiProperty({
     description: 'The location where the event will take place',
@@ -207,8 +251,8 @@ export class EventResponsesDTO {
   })
   images: string[];
 
-  @ApiProperty({ description: 'Number of attendees', example: 12, default: 20 })
-  limit: string;
+  @ApiProperty({ description: 'Number of attendees', example: 12, default: 10 })
+  limit: number;
 
   @ApiProperty({
     description:
@@ -243,4 +287,55 @@ export class EventResponsesDTO {
   listOfAttendees: {
     id: string;
   }[];
+}
+
+export class GetAllEventsDTO{
+  @ApiProperty({
+    description: "Price order must be 'asc' or 'desc' ",
+    example: "asc",
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  sort?: string;
+
+  @ApiProperty({
+    description: 'Price is lower than equal to',
+    example: 6,
+    required: false,
+  })
+  @IsOptional()
+  @IsNumber()
+  lte?: number;
+
+  @ApiProperty({
+    description: 'Price is greater than equal to',
+    example: 30,
+    required: false,
+  })
+  @IsOptional()
+  @IsNumber()
+  gte?: number;
+
+  @ApiProperty({
+    description:
+      'This describes the category of the event',
+    example: "MUSIC",
+    required: false,
+  })
+  @IsOptional()
+  @IsEnum(CategoryType)
+  equals?: CategoryType;
+
+  @ApiProperty({
+    description:
+      'This describes the specific dietary preference(s) of the event',
+    example: ['HALAL', 'VEGAN', 'VEGE', 'CASHER', 'STANDARD'],
+  })
+  @IsOptional()
+  @IsArray()
+  @IsEnum(InclusionType, { each: true })
+  @Validate(IsNotDuplicate)
+  inclusive?: InclusionType[];
 }

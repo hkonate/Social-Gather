@@ -40,10 +40,12 @@ model Event{
   id                        String @id  @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   title                     String @db.Char(50)
   description               String
-  schedule                  String
+  schedule                  DateTime
   images                    String[] @default([])
   address                   String
-  limit                     String  @default("20")
+  limit                     Int  @default(10)
+  price                     Int  @default(0)
+  category                  CategoryType @default(OTHERS)
   inclusive                 InclusionType[]
   creatorId                 String @db.Uuid
   creator                   User @relation("event_created",fields: [creatorId], references: [id])
@@ -70,4 +72,16 @@ enum InclusionType {
   VEGE
   CASHER
   STANDARD                 
+}
+
+enum CategoryType {
+  CONCERT
+  KARAOKE
+  RESTAURANT
+  GAMING
+  SPORT
+  MOVIE
+  STUDY
+  ART
+  OTHERS
 }

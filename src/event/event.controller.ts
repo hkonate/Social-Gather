@@ -12,6 +12,9 @@ import {
   UploadedFiles,
   UseInterceptors,
   HttpCode,
+  Query,
+  ParseIntPipe,
+  ParseEnumPipe,
 } from '@nestjs/common';
 import {
   CreateEventDTO,
@@ -36,6 +39,8 @@ import {
   ApiUnprocessableEntityResponse,
   ApiUnsupportedMediaTypeResponse,
 } from '@nestjs/swagger';
+import {CategoryType, InclusionType} from "@prisma/client"
+
 @ApiTags('Event')
 @Controller('event')
 @UseGuards(AuthGuard)
@@ -47,11 +52,51 @@ export class EventController {
     description: 'Founded an array of events object as response',
     type: [EventResponsesDTO],
   })
+  @ApiQuery({
+    name: 'sort',
+    type: 'string',
+    example: 'asc',
+    required: false,
+  })
+  @ApiQuery({
+    name: 'lte',
+    type: 'number',
+    example: 0,
+    required: false,
+  })
+  @ApiQuery({
+    name: 'gte',
+    type: 'number',
+    example: 16,
+    required: false,
+  })
+  @ApiQuery({
+    name: 'inclusive',
+    type: '[InclusionType]',
+    example: ['HALAL', 'STANDARD'],
+    required: false,
+  })
+  @ApiQuery({
+    name: 'equals',
+    type: 'CategoryType',
+    example: 'RESTAURANT',
+    required: false,
+  })
   @Get()
-  getEvents(): Promise<EventResponsesDTO[]> {
-    return this.eventService.getEvents();
+  getEvents(
+    @Query("sort") sort?: string,
+    @Query("lte" ) lte?: number,
+    @Query("gte") gte?: number,
+    @Query("equals" ) equals?: CategoryType,
+    @Query("inclusive" ) inclusive?: InclusionType[] ,
+  ): Promise<EventResponsesDTO[]> {
+    console.log(inclusive);
+    return this.eventService.getEvents({sort ,lte, gte, equals, inclusive});
   }
 
+  
+  
+  
   @ApiFoundResponse({
     description: 'Founded an event object as response',
     type: EventResponsesDTO,
@@ -70,6 +115,11 @@ export class EventController {
     return this.eventService.getEventById(id);
   }
 
+  
+  
+  
+  
+  
   @ApiCreatedResponse({
     description: 'Created an event object as response',
     type: EventResponsesDTO,
@@ -93,22 +143,15 @@ export class EventController {
     return this.eventService.createEvent(body, userPayload.id, files);
   }
 
+  
+  
+  
+  
   @ApiOkResponse({
     description: 'Updated an event object as response',
     type: EventResponsesDTO,
   })
-  @ApiQuery({
-    name: 'title',
-    type: 'string',
-    example: 'Quick',
-    required: false,
-  })
-  @ApiQuery({
-    name: 'inclusive',
-    type: '[InclusionType]',
-    example: ['HALAL', 'STANDARD'],
-    required: false,
-  })
+
   @ApiUnsupportedMediaTypeResponse({
     description: "File's type is not supported",
   })

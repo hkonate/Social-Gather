@@ -6,10 +6,10 @@ import {
   UnsupportedMediaTypeException,
   UnprocessableEntityException,
 } from '@nestjs/common';
-import { InclusionType } from '@prisma/client';
+import { InclusionType, CategoryType} from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { JWTPayloadType } from 'src/guards/auth.guards';
-import { EventResponsesDTO } from './dtos/event.dtos';
+import { EventResponsesDTO, GetAllEventsDTO } from './dtos/event.dtos';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 
 interface CreateEventParams {
@@ -17,7 +17,9 @@ interface CreateEventParams {
   description: string;
   schedule: string;
   address: string;
-  limit?: string;
+  limit?: number;
+  price?: number;
+  category?: CategoryType;
   inclusive?: InclusionType[];
 }
 
@@ -25,9 +27,13 @@ interface UpdateEvent {
   title?: string;
   description?: string;
   address?: string;
-  limit?: string;
+  limit?: number;
+  price?: number;
+  category?: CategoryType;
   inclusive?: InclusionType[];
 }
+
+
 
 const eventSelect = {
   id: true,
@@ -36,6 +42,8 @@ const eventSelect = {
   schedule: true,
   address: true,
   inclusive: true,
+  price: true,
+  category: true,
   limit: true,
   images: true,
 };
@@ -66,11 +74,31 @@ export class EventService {
     private readonly cloudinaryService: CloudinaryService,
   ) {}
   //Get all events
-  async getEvents() {
+  async getEvents({sort, lte, gte, equals, inclusive}: GetAllEventsDTO) {
     try {
+      const currentTime = new Date();
       const events = await this.prismaService.event.findMany({
+        where:{
+          category: equals ?{
+            equals,
+          } : undefined,
+          inclusive: inclusive ?{
+              hasSome: inclusive,
+          }: undefined,
+          schedule:{
+            gt: currentTime,
+          },
+          ...((lte || gte) && {price: {
+            ...(lte && {lte}),
+           ...(gte && {gte})
+          }})
+        },
+        orderBy:{
+         price: sort === "desc" ? "desc" : "asc"
+        },
         select,
       });
+      
       return events;
     } catch (error) {
       throw new HttpException(error.message, error.status);
@@ -94,6 +122,8 @@ export class EventService {
       schedule,
       inclusive,
       limit,
+      price,
+      category,
       address,
     }: CreateEventParams,
     userId: string,
@@ -124,10 +154,12 @@ export class EventService {
         data: {
           title,
           description,
-          schedule,
+          schedule: new Date(schedule),
           ...(inclusive && { inclusive }),
           ...(images.length > 0 && { images }),
           ...(limit && { limit }),
+          ...(price && {price}),
+          ...(category && {category}),
           address,
           listOfAttendees: {
             connect: {
@@ -173,7 +205,7 @@ export class EventService {
         throw new UnauthorizedException(
           'The creator of the event is not allow to join or unjoin the event',
         );
-      if (listOfAttendees.length >= parseInt(limit) && attend) {
+      if (listOfAttendees.length >= limit && attend) {
         throw new UnauthorizedException(
           'Event reach attendees limit, you cannot attend it.',
         );
@@ -199,7 +231,7 @@ export class EventService {
   async updateEventById(
     id: string,
     userId: string,
-    { title, description, inclusive, limit, address }: UpdateEvent,
+    { title, description, inclusive, limit, address, price, category }: UpdateEvent,
     files: Array<Express.Multer.File>,
   ): Promise<EventResponsesDTO> {
     const images = [];
@@ -225,9 +257,7 @@ export class EventService {
       const event = await this.doesUserHasAuthorization(id, userId);
       this.eventTimeUpdateRestricction(event.schedule);
       if (
-        parseInt(limit) < event.listOfAttendees.length ||
-        parseInt(limit) < 2
-      ) {
+        limit < event.listOfAttendees.length) {
         throw new UnauthorizedException(
           "You are not allow to have a limit lower than attendee's number",
         );
@@ -241,6 +271,8 @@ export class EventService {
           ...(description && { description }),
           ...(inclusive && { inclusive }),
           ...(limit && { limit }),
+          ...(price && {price}),
+          ...(category && {category}),
           ...(address && { address }),
           ...(images.length > 0 && { images }),
         },
@@ -298,7 +330,7 @@ export class EventService {
     return event;
   }
 
-  private eventTimeRestriction(eventTime: string) {
+  private eventTimeRestriction(eventTime: string | Date) {
     const tenMinutesAgo = new Date().getTime() + 10 * 60 * 1000;
     const eventDate = new Date(eventTime).getTime();
     if (tenMinutesAgo >= eventDate) {
@@ -308,9 +340,9 @@ export class EventService {
     }
   }
 
-  private eventTimeUpdateRestricction(eventTime: string) {
+  private eventTimeUpdateRestricction(eventTime: string| Date) {
     const threeHoursAgo = new Date().getTime() + 3 * 60 * 60 * 1000;
-    const eventDate = new Date(eventTime).getTime();
+    const eventDate =new Date(eventTime).getTime();
     if (threeHoursAgo >= eventDate) {
       throw new UnauthorizedException(
         'You are not allow to update an event within a short time.',
