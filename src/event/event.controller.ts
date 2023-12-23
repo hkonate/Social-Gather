@@ -87,11 +87,12 @@ export class EventController {
     @Query("sort") sort?: string,
     @Query("lte" ) lte?: number,
     @Query("gte") gte?: number,
+    @Query("title") title?: string,
     @Query("equals" ) equals?: CategoryType,
     @Query("inclusive" ) inclusive?: InclusionType[] ,
   ): Promise<EventResponsesDTO[]> {
     console.log(inclusive);
-    return this.eventService.getEvents({sort ,lte, gte, equals, inclusive});
+    return this.eventService.getEvents({sort ,lte, gte, equals, inclusive, title});
   }
 
   

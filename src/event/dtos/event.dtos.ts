@@ -301,6 +301,16 @@ export class GetAllEventsDTO{
   sort?: string;
 
   @ApiProperty({
+    description: "Title's event",
+    example: "Quick",
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  title?: string;
+
+  @ApiProperty({
     description: 'Price is lower than equal to',
     example: 6,
     required: false,

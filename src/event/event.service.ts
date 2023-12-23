@@ -74,7 +74,7 @@ export class EventService {
     private readonly cloudinaryService: CloudinaryService,
   ) {}
   //Get all events
-  async getEvents({sort, lte, gte, equals, inclusive}: GetAllEventsDTO) {
+  async getEvents({sort, lte, gte, equals, inclusive, title}: GetAllEventsDTO) {
     try {
       const currentTime = new Date();
       const events = await this.prismaService.event.findMany({
@@ -87,6 +87,9 @@ export class EventService {
           }: undefined,
           schedule:{
             gt: currentTime,
+          },
+          title:{
+            contains: title
           },
           ...((lte || gte) && {price: {
             ...(lte && {lte}),
