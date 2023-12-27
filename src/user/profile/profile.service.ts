@@ -28,13 +28,16 @@ interface ProfileServiceResponses {
       id: string;
       title: string;
       limit: number;
-      price: number,
+      price: number;
       category: CategoryType,
-      inclusive: InclusionType[],
+      inclusive: InclusionType[];
       images: string[];
       listOfAttendees: {
         id: string;
       }[];
+    }[];
+    listOfEventsToAttend: {
+      id: string;
     }[];
   };
 }
@@ -66,6 +69,11 @@ const profileSelect = {
           },
         },
       },
+      listOfEventsToAttend:{
+        select:{
+          id: true
+        }
+      }
     },
   },
 };

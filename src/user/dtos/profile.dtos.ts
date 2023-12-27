@@ -59,7 +59,7 @@ export class ProfileResponsesDTO {
       pseudo: 'JohnDoe',
       phone: '0612234556',
       email: 'johndoe@gmail.com',
-      listOfEventsCreated: {
+      listOfEventsCreated: [{
         id: '7a9a72da-7e90-4fdf-9b1c-a7ea25af34g0',
         title: 'Quick',
         limit: 16,
@@ -78,7 +78,15 @@ export class ProfileResponsesDTO {
             id: '2z2d98da-7e90-4fdf-9b1c-a7ea87uf34g0',
           },
         ],
-      },
+      }],
+      listOfEventsToAttend: [
+        {
+          id: '2z2d72da-7e90-4fdf-9b1c-a7ea25af34g0',
+        },
+        {
+          id: '2z2d98da-7e90-4fdf-9b1c-a7ea87uf34g0',
+        },
+      ],
     },
   })
   user: {
@@ -97,6 +105,9 @@ export class ProfileResponsesDTO {
       listOfAttendees: {
         id: string;
       }[];
+    }[];
+    listOfEventsToAttend: {
+      id: string;
     }[];
   };
 }
