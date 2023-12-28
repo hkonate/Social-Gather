@@ -53,6 +53,11 @@ const creatorSelect = {
   pseudo: true,
   phone: true,
   email: true,
+  profile:{
+    select:{
+      picture: true
+    }
+  }
 };
 const select = {
   ...eventSelect,
