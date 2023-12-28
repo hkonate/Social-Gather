@@ -66,6 +66,7 @@ export class ProfileResponsesDTO {
         price: 19,
         schedule: '2024-10-26T12:00',
         category: "CONCERT",
+        address: '25 Bd de Sébastopol, 75001 Paris',
         inclusive: ["HALAL", "VEGAN"],
         images: [
           'https://res.cloudinary.com/dyay2jzz5/image/upload/v1700517112/SocialGather/7a9a72da-7e90-4fdf-9b1c-a7ea25af34d6/Event/ceabynqkowpq6ntjwfkn.jpg,https://res.cloudinary.com/dyay2jzz5/image/upload/v1700517113/SocialGather/7a9a72da-7e90-4fdf-9b1c-a7ea25af34d6/Event/kjiqafhbyxghnunu4ame.jpg,https://res.cloudinary.com/dyay2jzz5/image/upload/v1700517114/SocialGather/7a9a72da-7e90-4fdf-9b1c-a7ea25af34d6/Event/rlwhzmowr7zigdebt0ud.jpg',
@@ -100,6 +101,7 @@ export class ProfileResponsesDTO {
       title: string;
       limit: number;
       price: number;
+      address: string;
       schedule: Date;
       category: CategoryType;
       inclusive: InclusionType[];
