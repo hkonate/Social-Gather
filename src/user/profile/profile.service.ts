@@ -29,6 +29,7 @@ interface ProfileServiceResponses {
       title: string;
       limit: number;
       price: number;
+      schedule: Date;
       category: CategoryType,
       inclusive: InclusionType[];
       images: string[];
@@ -60,6 +61,7 @@ const profileSelect = {
           limit: true,
           price: true,
           category: true,
+          schedule: true,
           inclusive: true,
           images: true,
           listOfAttendees: {

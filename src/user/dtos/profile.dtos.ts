@@ -64,6 +64,7 @@ export class ProfileResponsesDTO {
         title: 'Quick',
         limit: 16,
         price: 19,
+        schedule: '2024-10-26T12:00',
         category: "CONCERT",
         inclusive: ["HALAL", "VEGAN"],
         images: [
@@ -99,6 +100,7 @@ export class ProfileResponsesDTO {
       title: string;
       limit: number;
       price: number;
+      schedule: Date;
       category: CategoryType;
       inclusive: InclusionType[];
       images: string[];
