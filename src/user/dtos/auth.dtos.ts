@@ -175,4 +175,9 @@ export class DeleteResponseDTO {
   @IsString({ each: true })
   authTokens: string[];
 }
-export class SigninResponseDTO extends DeleteResponseDTO {}
+export class SigninResponseDTO extends DeleteResponseDTO {
+  profile: {
+    bio: string;
+    picture: string;
+  };
+}

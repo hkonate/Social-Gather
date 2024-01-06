@@ -130,6 +130,22 @@ export class AuthService {
           data: {
             authTokens: [...user.authTokens, token],
           },
+          select: {
+            id: true,
+            firstname: true,
+            lastname: true,
+            pseudo: true,
+            phone: true,
+            email: true,
+            password: true,
+            authTokens: true,
+            profile: {
+              select: {
+                bio: true,
+                picture: true,
+              },
+            },
+          },
         });
         return updatedUser;
       } else {
