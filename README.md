@@ -27,10 +27,6 @@ $ npx prisma db push
 $ npx prisma studio
 ```
 
-## Swagger link
-
-https://social-gather-production.up.railway.app/docs
-
 ## Running the app
 
 ```bash
@@ -56,6 +52,10 @@ $ npm run test:e2e
 # test coverage
 $ npm run test:cov
 ```
+
+## Swagger link
+
+https://social-gather-production.up.railway.app/docs
 
 ## How to tweak this project for your own uses
 
