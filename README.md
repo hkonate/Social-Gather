@@ -27,6 +27,10 @@ $ npx prisma db push
 $ npx prisma studio
 ```
 
+## Swagger link
+
+https://social-gather-production.up.railway.app/docs
+
 ## Running the app
 
 ```bash
