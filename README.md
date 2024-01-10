@@ -1,35 +1,30 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+<h1>NestJS REST API With Typescript Prisma Postgresql Railway</h1>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+<h2>A fully functional Event project written in NestJS showing how to create a REST API and deploy to Railway!</h2>
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
-## Description
+<p>This project is an events project that was developed alongside Nest Documentation and a YouTube series demonstrating how to create a custom REST API in NestJS. It was collaboratively built with @Walid (Frontend part with Vanilla JS) to facilitate AdaTechSchool students in organizing various events such as study sessions, movie screenings, and more. Every section of this project illustrates how to accomplish the following:</p>
+<ul>
+  <li>Create a custom web server with NestJS using Express</li>
+  <li>Connect Prisma to a PostgreSQL database server</li>
+  <li>Define models in Prisma Schema using Prisma</li>
+  <li>Perform CRUD operations with the generated Prisma API</li>
+  <li>Utilize Guards, Pipes, Interceptor, and DTOs in Nestjs</li>
+  <li>Hash your passwords with NestJS using Bcrypt</li>
+  <li>Enhance your Authentification with NestJS using JsonWebToken</li>
+  <li>Manage images with Nest using Cloudinary</li>
+  <li>Implement a chat feature with NestJS using Websockets</li>
+  <li>Document your API with Nest using Swagger</li>
+</ul>
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Installation
+## How to install this project
 
 ```bash
+$ git clone git@github.com:hkonate/Social-Gather.git
 $ npm install
+$ npm install prisma --save-dev
+$ npx prisma db push
+$ npx prisma studio
 ```
 
 ## Running the app
@@ -58,16 +53,21 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
-## Support
+## How to tweak this project for your own uses
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+Since this is an simple Events project, I'd encourage you to clone and rename this project to use for your own puposes. It's a good starter boilerplate
 
-## Stay in touch
+## Find a bug?
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+If you found an issue or would like to submit an improvement to this project, please submit an issue using the issues tab above. If you would like to submit a PR with a fix, reference the issue you created!
 
-## License
+## Known issues (Work in progress)
 
-Nest is [MIT licensed](LICENSE).
+This project is till ongoing, you may encounter some issue with chat endpoints. In addition, handle images in chat has not been completed yet. This is coming soon!
+
+## Contributors
+Marius Espejo https://www.youtube.com/watch?v=atbdpX4CViM
+
+## Like this project?
+
+If you are feeling generous, buy me a coffee! - https://www.buymeacoffee.com/hkonate
