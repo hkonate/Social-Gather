@@ -1,6 +1,6 @@
-<h1>NestJS REST API With Typescript Prisma Postgresql Railway</h1>
+<h1>NestJS REST API With Typescript Prisma PostgreSQL Railway</h1>
 
-<h2>A fully functional Event project written in NestJS showing how to create a REST API and deploy to Railway!</h2>
+<h2>A fully functional events project written in NestJS showing how to create a REST API using Prisma and PostqreSQL</h2>
 
 
 <p>This project is an events project that was developed alongside Nest Documentation and a YouTube series demonstrating how to create a custom REST API in NestJS. It was collaboratively built with @Walid (Frontend part with Vanilla JS) to facilitate AdaTechSchool students in organizing various events such as study sessions, movie screenings, and more. Every section of this project illustrates how to accomplish the following:</p>
